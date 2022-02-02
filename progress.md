@@ -6,7 +6,9 @@
 # Wednesday Feb 02 2022
 [c9a3581](https://github.com/Rob174/MaitriseClustering/tree/c9a3581df4940583b887fd1b18e0e604f8dd2044) 🔨 Best and first improvement 
 [c9a3581](https://github.com/Rob174/MaitriseClustering/tree/c9a3581df4940583b887fd1b18e0e604f8dd2044) 🔨 hmean global local search
-[db2c053](https://github.com/Rob174/MaitriseClustering/tree/db2c05349d6ef4789aed360baccd4bae0ade7a9a) ⏲️ KMean initialization
+# Wednesday Feb 02 2022
+[ec36596](https://github.com/Rob174/MaitriseClustering/tree/ec3659626cefa1f72681a475391cc99120a34292) 🔨 KMeans+ 
+[ec36596](https://github.com/Rob174/MaitriseClustering/tree/ec3659626cefa1f72681a475391cc99120a34292) 🔨 Simple test 1
 
 # TODO 
 1️⃣2️⃣3️⃣4️⃣5️⃣6️⃣7️⃣8️⃣9️⃣🔟 1️⃣ = most urgent 🔟 = can wait
