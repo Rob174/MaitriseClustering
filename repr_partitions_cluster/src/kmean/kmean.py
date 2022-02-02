@@ -12,7 +12,13 @@ def kmean(points_coords: np.ndarray, points_assign: np.ndarray, clust_coords: np
     # Output:
         (ndarray) [num_centroids, num_coordinates] for the centroids coordinates
     """
-        
+    def recompute_centroids(points_coords,points_assign,clust_coords):
+        for i_center in range(len(clust_coords)):
+            new_center = np.mean(points_coords[points_assign==i_center],axis=0)
+            if new_center != clust_coords[i_center]:
+                change = True
+            clust_coords[i_center] = new_center
+        return points_coords,points_assign,clust_coords
     change = True
     while change:
         change = False
@@ -27,14 +33,21 @@ def kmean(points_coords: np.ndarray, points_assign: np.ndarray, clust_coords: np
                     best_center = i_center
             points_assign[i_pt] = best_center
         # Recompute centroids
-        for i_center in range(len(clust_coords)):
-            new_center = np.mean(points_coords[points_assign==i_center],axis=0)
-            if new_center != clust_coords[i_center]:
-                change = True
-            clust_coords[i_center] = new_center
+        points_coords,points_assign,clust_coords = recompute_centroids(points_coords,points_assign,clust_coords)
         
     # KMeans+ : Check if empty clusters
-    empty_clusters = [i for i in range(len(clust_coords)) if i not in np.unique(points_assign)]
+    clusters_with_pts = np.unique(points_assign)
+    empty_clusters = [i for i in range(len(clust_coords)) if i not in clusters_with_pts]
     if len(empty_clusters) > 0:
-        # TODO sort by largest distance to centroid
-        # TODO Take the farthest point to fill one of the empty clusters and repeat
+        # compute distance of each point to centroid
+        d_pts_clust = np.zeros((len(clust_coords),len(points_coords)))# euclidian dist squared
+        for i_pt in range(len(points_coords)):
+            for i_clust in clusters_with_pts:
+                d_pts_clust[i_clust,i_pt] = np.sum((points_coords[i_pt]-clust_coords[i_clust])**2)
+        # sort by largest distance to centroid : cf https://stackoverflow.com/questions/30577375/have-numpy-argsort-return-an-array-of-2d-indices
+        sorted_coords = np.dstack(np.unravel_index(np.argsort(d_pts_clust.ravel()), (len(clust_coords),len(points_coords)))).reshape(-1,2) # [num_pts, 2] in increasing order of dist
+        # Take the farthest point to fill one of the empty clusters and repeat
+        for i,empt_id in enumerate(empty_clusters):
+            farthest_pt = sorted_coords[-1-i,1]
+            points_assign[farthest_pt] = empt_id
+        points_coords,points_assign,clust_coords = recompute_centroids(points_coords,points_assign,clust_coords)

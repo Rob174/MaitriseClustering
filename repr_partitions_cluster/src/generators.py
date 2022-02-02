@@ -26,3 +26,10 @@ def generate_random(num_clusters: int,num_points: int, num_coordinates: int = 2)
     points_coords = np.random.normal(loc=0,scale=1,size=(num_points, num_coordinates))
     points_init_assign = np.random.randint(0,num_clusters,size=num_points)
     return points_coords,points_init_assign
+
+def generate_simple1():
+    """Simple situation for tests only 
+    Points placed as in 
+    """
+    points_coords = np.random.normal(loc=0,scale=1,size=(num_points, num_coordinates))
+    points_init_assign = np.random.randint(0,num_clusters,size=num_points)
