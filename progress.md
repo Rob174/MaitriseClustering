@@ -6,10 +6,10 @@
 # Wednesday Feb 02 2022
 [c9a3581](https://github.com/Rob174/MaitriseClustering/tree/c9a3581df4940583b887fd1b18e0e604f8dd2044) 🔨 Best and first improvement 
 [6bc6391](https://github.com/Rob174/MaitriseClustering/tree/6bc6391e9bfb238a9e85a6f1550575628366ca77) 🐛🔨 hmean global local search
-# Wednesday Feb 02 2022
 [6bc6391](https://github.com/Rob174/MaitriseClustering/tree/6bc6391e9bfb238a9e85a6f1550575628366ca77) ✔️ KMeans+ 
 [6bc6391](https://github.com/Rob174/MaitriseClustering/tree/6bc6391e9bfb238a9e85a6f1550575628366ca77) ✔️ Simple test 1
 ✔️🚩 2 Initialization methods  as in First vs best
+[a6c1ea0](https://github.com/Rob174/MaitriseClustering/tree/a6c1ea021bea534bb405618572a4d0d8c2b6499d) 
 
 
 # TODO 
