@@ -15,7 +15,7 @@ def cost(points_coords: np.ndarray, points_assign: np.ndarray, clust_coords: np.
     """
     cost = 0
     for i_pt in range(len(points_coords)):
-        cost += np.sum((points_coords[i_pt] - clust_coords[points_assign[i_pt]])**2)**0.5
+        cost += np.sum((points_coords[i_pt] - clust_coords[points_assign[i_pt]])**2)
     return cost
 
 def move(points_assign: np.ndarray, clust_coords: np.ndarray,
