@@ -36,10 +36,14 @@ def improvement_hmeans(points_coords: np.ndarray, points_init_assign: np.ndarray
             nj = num_assign_to_clust[to_clust_id]
             xlcenter = clust_coords[from_clust_id]
             xjcenter = clust_coords[to_clust_id]
-            new_xlcenter = (nl*xlcenter-xi)/(nl-1)
+            if nl > 0:
+                new_xlcenter = (nl*xlcenter-xi)/(nl-1)
+            else:
+                new_xlcenter = np.zeros(xlcenter.shape)
             new_xjcenter = (nj*xjcenter+xi)/(nj+1)
             #TODO To be checked  if new or not new
-            impact_on_cost = nj/(nj+1)*(new_xjcenter-xi)**2 + nl/(nl-1)*(new_xlcenter-xi)**2
+            # TODO solve edge case nl-1 = 0 --> find meaning of the formula by coming back to the cost function
+            impact_on_cost = np.sum(nj/(nj+1)*(new_xjcenter-xi)**2 + nl/(nl-1)*(new_xlcenter-xi)**2)**.5
             new_cost = initial_cost+impact_on_cost
             if callback_stop.stop_loop(point_moving_id,from_clust_id,to_clust_id,
                                        new_xlcenter,new_xjcenter,new_cost):

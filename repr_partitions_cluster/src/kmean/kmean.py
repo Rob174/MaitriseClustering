@@ -1,9 +1,13 @@
 """KMeans+ implementation: used to compute the initial centroids positions (given the points coordinates and the points' affectation)"""
-
+from pathlib import Path
+import sys
+sys.path.append(str(Path(".").resolve().joinpath("venv")))
+print(str(Path(".").resolve().joinpath("venv")))
 import numpy as np
 from typing import *
+from repr_partitions_cluster.src.utils import equals
 
-def kmean(points_coords: np.ndarray, points_assign: np.ndarray, clust_coords: np.ndarray) -> np.ndarray:
+def kmean(points_coords: np.ndarray, points_assign: np.ndarray, clust_coords: np.ndarray) -> Tuple[np.ndarray,np.ndarray]:
     """
     # Inputs:
         points_coords (np.ndarray) : [num_points, num_coordinates] 
@@ -15,7 +19,7 @@ def kmean(points_coords: np.ndarray, points_assign: np.ndarray, clust_coords: np
     def recompute_centroids(points_coords,points_assign,clust_coords):
         for i_center in range(len(clust_coords)):
             new_center = np.mean(points_coords[points_assign==i_center],axis=0)
-            if new_center != clust_coords[i_center]:
+            if equals(new_center, clust_coords[i_center]):
                 change = True
             clust_coords[i_center] = new_center
         return points_coords,points_assign,clust_coords
@@ -51,3 +55,4 @@ def kmean(points_coords: np.ndarray, points_assign: np.ndarray, clust_coords: np
             farthest_pt = sorted_coords[-1-i,1]
             points_assign[farthest_pt] = empt_id
         points_coords,points_assign,clust_coords = recompute_centroids(points_coords,points_assign,clust_coords)
+    return points_assign,clust_coords

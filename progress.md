@@ -5,10 +5,12 @@
 [ef45671](https://github.com/Rob174/MaitriseClustering/tree/ef4567111a1574f222cbe2243ae28a8e41406d77) Initial version HMean. Creation of the data structures for the algorithm. To be checked. Multiple places to check.
 # Wednesday Feb 02 2022
 [c9a3581](https://github.com/Rob174/MaitriseClustering/tree/c9a3581df4940583b887fd1b18e0e604f8dd2044) 🔨 Best and first improvement 
-[c9a3581](https://github.com/Rob174/MaitriseClustering/tree/c9a3581df4940583b887fd1b18e0e604f8dd2044) 🔨 hmean global local search
+[c9a3581](https://github.com/Rob174/MaitriseClustering/tree/c9a3581df4940583b887fd1b18e0e604f8dd2044) 🐛🔨 hmean global local search
 # Wednesday Feb 02 2022
-[ec36596](https://github.com/Rob174/MaitriseClustering/tree/ec3659626cefa1f72681a475391cc99120a34292) 🔨 KMeans+ 
-[ec36596](https://github.com/Rob174/MaitriseClustering/tree/ec3659626cefa1f72681a475391cc99120a34292) 🔨 Simple test 1
+[ec36596](https://github.com/Rob174/MaitriseClustering/tree/ec3659626cefa1f72681a475391cc99120a34292) ✔️ KMeans+ 
+[ec36596](https://github.com/Rob174/MaitriseClustering/tree/ec3659626cefa1f72681a475391cc99120a34292) ✔️ Simple test 1
+✔️🚩 2 Initialization methods  as in First vs best
+
 
 # TODO 
 1️⃣2️⃣3️⃣4️⃣5️⃣6️⃣7️⃣8️⃣9️⃣🔟 1️⃣ = most urgent 🔟 = can wait
