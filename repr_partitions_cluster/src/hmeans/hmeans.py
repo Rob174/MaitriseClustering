@@ -41,10 +41,12 @@ def improvement_hmeans(points_coords: np.ndarray, points_init_assign: np.ndarray
             else:
                 new_xlcenter = np.zeros(xlcenter.shape)
             new_xjcenter = (nj*xjcenter+xi)/(nj+1)
-            #TODO To be checked  if new or not new
-            # TODO solve edge case nl-1 = 0 --> find meaning of the formula by coming back to the cost function
-            impact_on_cost = np.sum(nj/(nj+1)*(new_xjcenter-xi)**2 + nl/(nl-1)*(new_xlcenter-xi)**2)**.5
-            new_cost = initial_cost+impact_on_cost
+            improv_of_cost = np.sum(nj/(nj+1)*(new_xjcenter-xi)**2) 
+            if nl > 1:
+                # As defined in M. Telgarsky et A. Vattani, « Hartigan’s Method: k-means Clustering without Voronoi », in Proceedings of the Thirteenth International Conference on Artificial Intelligence and Statistics, mars 2010, p. 820‑827.
+                # considering that a cluster with one point and an empty cluster have both  a cost of 0
+                improv_of_cost += np.sum(nl/(nl-1)*(new_xlcenter-xi)**2)
+            new_cost = initial_cost-improv_of_cost
             if callback_stop.stop_loop(point_moving_id,from_clust_id,to_clust_id,
                                        new_xlcenter,new_xjcenter,new_cost):
                 return callback_stop.get_new_clustering(points_init_assign, clust_init_coords)
