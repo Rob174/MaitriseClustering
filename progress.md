@@ -10,8 +10,10 @@
 [d4bb311](https://github.com/Rob174/MaitriseClustering/tree/d4bb311deeaf93c2dfaa56e3a0390202db8c944f) ✔️ Simple test 1
 ✔️🚩 2 Initialization methods  as in First vs best
 [a6c1ea0](https://github.com/Rob174/MaitriseClustering/tree/a6c1ea021bea534bb405618572a4d0d8c2b6499d) ✔️ Cost of the initial solution
-〰️ random_cluster_initialization : wands initialization method but select random clusters to merge at each step
-⏲️ Debug hmean
+# Friday Feb 04 2022
+
+[1fd3cd6](https://github.com/Rob174/MaitriseClustering/tree/1fd3cd6a02d5e6366256575ed7e9795f3148cbba) 〰️ random_cluster_initialization : wands initialization method but select random clusters to merge at each step
+[1fd3cd6](https://github.com/Rob174/MaitriseClustering/tree/1fd3cd6a02d5e6366256575ed7e9795f3148cbba) ⏲️ Debug hmean
 # TODO 
 1️⃣2️⃣3️⃣4️⃣5️⃣6️⃣7️⃣8️⃣9️⃣🔟 1️⃣ = most urgent 🔟 = can wait
 - 1️⃣ implement HMean
