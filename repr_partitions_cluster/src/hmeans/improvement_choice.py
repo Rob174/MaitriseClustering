@@ -1,38 +1,8 @@
 
 import numpy as np
 from typing import *
+from repr_partitions_cluster.src.utils import *
 
-def cost(points_coords: np.ndarray, points_assign: np.ndarray, clust_coords: np.ndarray):
-    """
-    !! Version non optimized designed to be used only at the start of the hmean algorithm. Elsewhere, use impact_on_cost to adjust the cost
-    Compute the cost of one clustering proposition defined by the following 3 parameters :
-    # Inputs: 
-        points_coords (ndarray): [num_points, num_coordinates] for points coordinates 
-        points_assign (ndarray): [num_points, ] with in each cell the centroid index associated with the point at the same position
-        clust_coords (ndarray): [num_centroids, num_coordinates] for centroids coordinates
-    # Output:
-        cost (float): cost of the clustering proposition
-    """
-    cost = 0
-    for i_pt in range(len(points_coords)):
-        cost += np.sum((points_coords[i_pt] - clust_coords[points_assign[i_pt]])**2)
-    return cost
-
-def move(points_assign: np.ndarray, clust_coords: np.ndarray,
-         pt_to_move_id: int,from_clust_id: int,to_clust_id: int,
-         new_orig_clust_coord: np.ndarray,new_dest_clust_coord: np.ndarray
-         ) -> Tuple[np.ndarray, np.ndarray]:
-    """Create the clustering chosen with parameters :
-    # Inputs: 
-        points_assign (ndarray): [num_points, ] with in each cell the centroid index associated with the point at the same position
-        clust_coords (ndarray): [num_centroids, num_coordinates] for centroids coordinates
-    # Output:
-        Tuple with 2 ndarrays : points_assign and clust_coords updated
-    """
-    points_assign[pt_to_move_id] = to_clust_id
-    clust_coords[from_clust_id] = new_orig_clust_coord
-    clust_coords[to_clust_id] = new_dest_clust_coord
-    return points_assign,clust_coords
     
 class NoImprSolutionFound(Exception):
     """Exception raised when no improving solution is found"""
