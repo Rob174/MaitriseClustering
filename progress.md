@@ -14,6 +14,11 @@
 
 [1fd3cd6](https://github.com/Rob174/MaitriseClustering/tree/1fd3cd6a02d5e6366256575ed7e9795f3148cbba) 〰️ random_cluster_initialization : wands initialization method but select random clusters to merge at each step
 [1fd3cd6](https://github.com/Rob174/MaitriseClustering/tree/1fd3cd6a02d5e6366256575ed7e9795f3148cbba) ⏲️ Debug hmean
+
+🔨 Choice iteration order (CURR, BACK, RANDOM)
+✔️ Visualization callback : Allows to visualize a sequence of solutions
+⏲️ HMeans : cost optimization back to cost=init_cost+variation
+
 # TODO 
 1️⃣2️⃣3️⃣4️⃣5️⃣6️⃣7️⃣8️⃣9️⃣🔟 1️⃣ = most urgent 🔟 = can wait
 - 1️⃣ implement HMean
@@ -23,3 +28,9 @@
     - search cluster from first cluster in the list of clusters BACK
     - shuffle order of cluster after first choice RAND
   
+
+Suite
+1️⃣ Debugguer HMean
+2️⃣ Test best et first improvement
+3️⃣ Ordre de choix cluster (CURR, BACK  ou RAND) done but not tested
+🔟 Si le temps : intégrer visualisation étape de la recherche par étape plotly --> potentiellement très utile pr debuggage complexe

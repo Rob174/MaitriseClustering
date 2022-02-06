@@ -34,6 +34,7 @@ def update_center(
 
 
 def update_cost(
+    initial_cost: float,
     points_coords: np.ndarray, clust_coords: np.ndarray, num_assign_to_clust: np.ndarray,
     point_moving_id: int, from_clust_id: int, to_clust_id: int,
     updated_center_src: np.ndarray, updated_center_dst: np.ndarray
@@ -42,12 +43,15 @@ def update_cost(
     nl = num_assign_to_clust[from_clust_id]
     nj = num_assign_to_clust[to_clust_id]
 
-    new_cost = np.sum(nj/(nj+1)*(updated_center_dst-xi)**2)
+    part1 = np.sum(nj/(nj+1)*(updated_center_dst-xi)**2)
+    part2 = None
+    new_cost = initial_cost+part1
     if nl > 1:
         # As defined in M. Telgarsky et A. Vattani, « Hartigan’s Method: k-means Clustering without Voronoi », in Proceedings of the Thirteenth International Conference on Artificial Intelligence and Statistics, mars 2010, p. 820‑827.
         # considering that a cluster with one point and an empty cluster have both  a cost of 0
+        part2 = np.sum(nl/(nl-1)*(updated_center_src-xi)**2)
         new_cost -= np.sum(nl/(nl-1)*(updated_center_src-xi)**2)
-    assert new_cost >= 0, "Cost must be positive"
+    assert new_cost >= 0, f"Cost must be positive, {new_cost}={initial_cost}+{part1}-{part2}\n Details:\n {xi=}\n {nl=}\n {nj=}\n {updated_center_src=}\n {updated_center_dst=}"
     return new_cost
 
 
