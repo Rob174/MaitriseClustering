@@ -14,10 +14,10 @@
 
 [1fd3cd6](https://github.com/Rob174/MaitriseClustering/tree/1fd3cd6a02d5e6366256575ed7e9795f3148cbba) 〰️ random_cluster_initialization : wands initialization method but select random clusters to merge at each step
 [1fd3cd6](https://github.com/Rob174/MaitriseClustering/tree/1fd3cd6a02d5e6366256575ed7e9795f3148cbba) ⏲️ Debug hmean
-
-🔨 Choice iteration order (CURR, BACK, RANDOM)
-✔️ Visualization callback : Allows to visualize a sequence of solutions
-⏲️ HMeans : cost optimization back to cost=init_cost+variation
+# Sunday Feb 06 2022
+[12170d3](https://github.com/Rob174/MaitriseClustering/tree/12170d39a3338487e653c728a27259ab9b24d8ec) 🔨 Choice iteration order (CURR, BACK, RANDOM)
+[12170d3](https://github.com/Rob174/MaitriseClustering/tree/12170d39a3338487e653c728a27259ab9b24d8ec) ✔️ Visualization callback : Allows to visualize a sequence of solutions
+[12170d3](https://github.com/Rob174/MaitriseClustering/tree/12170d39a3338487e653c728a27259ab9b24d8ec) ⏲️ HMeans : cost optimization back to cost=init_cost+variation
 
 # TODO 
 1️⃣2️⃣3️⃣4️⃣5️⃣6️⃣7️⃣8️⃣9️⃣🔟 1️⃣ = most urgent 🔟 = can wait
