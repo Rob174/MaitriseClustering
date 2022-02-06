@@ -43,5 +43,3 @@
 Suite
 1️⃣ Debugguer HMean
 2️⃣ Test best et first improvement
-3️⃣ Ordre de choix cluster (CURR, BACK  ou RAND) done but not tested
-🔟 Si le temps : intégrer visualisation étape de la recherche par étape plotly --> potentiellement très utile pr debuggage complexe
