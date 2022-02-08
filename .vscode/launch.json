@@ -3,14 +3,16 @@
     // Pointez pour afficher la description des attributs existants.
     // Pour plus d'informations, visitez : https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
-    "configurations": [{
-            "name": "Python: Module",
+    "configurations": [
+
+        {
+            "name": "iteration_order",
             "type": "python",
             "request": "launch",
             "module": "repr_partitions_cluster.test.iteration_order"
         },
         {
-            "name": "Python: Module",
+            "name": "utils",
             "type": "python",
             "request": "launch",
             "module": "repr_partitions_cluster.test.utils"
@@ -18,13 +20,13 @@
 
 
         {
-            "name": "Python: Module",
+            "name": "hmeans",
             "type": "python",
             "request": "launch",
             "module": "repr_partitions_cluster.test.hmeans"
         },
         {
-            "name": "Python: Module",
+            "name": "kmeans",
             "type": "python",
             "request": "launch",
             "module": "repr_partitions_cluster.test.kmeans"
