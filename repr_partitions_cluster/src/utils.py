@@ -105,3 +105,12 @@ def move(points_assign: np.ndarray, clust_coords: np.ndarray,
     clust_coords[from_clust_id] = new_orig_clust_coord
     clust_coords[to_clust_id] = new_dest_clust_coord
     return points_assign, clust_coords
+
+# From https://stackoverflow.com/questions/33987060/python-context-manager-that-measures-time
+from time import perf_counter
+from contextlib import contextmanager
+
+@contextmanager
+def catchtime() -> float:
+    start = perf_counter()
+    yield lambda: perf_counter() - start

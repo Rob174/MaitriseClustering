@@ -3,19 +3,25 @@
     // Pointez pour afficher la description des attributs existants.
     // Pour plus d'informations, visitez : https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
-    "configurations": [
+    "configurations": [{
+            "name": "generate_data",
+            "type": "python",
+            "request": "launch",
+            "module": "repr_partitions_cluster.experiments.generate_data"
+        },
+
 
         {
             "name": "iteration_order",
             "type": "python",
             "request": "launch",
-            "module": "repr_partitions_cluster.test.iteration_order"
+            "module": "repr_partitions_cluster.test.test_iteration_order"
         },
         {
             "name": "utils",
             "type": "python",
             "request": "launch",
-            "module": "repr_partitions_cluster.test.utils"
+            "module": "repr_partitions_cluster.test.test_utils"
         },
 
 
@@ -23,13 +29,13 @@
             "name": "hmeans",
             "type": "python",
             "request": "launch",
-            "module": "repr_partitions_cluster.test.hmeans"
+            "module": "repr_partitions_cluster.test.test_hmeans"
         },
         {
             "name": "kmeans",
             "type": "python",
             "request": "launch",
-            "module": "repr_partitions_cluster.test.kmeans"
+            "module": "repr_partitions_cluster.test.test_kmeans"
         }
     ]
 }

@@ -34,6 +34,12 @@
 
 [02b0aae](https://github.com/Rob174/MaitriseClustering/tree/02b0aae950ecc2fe494d286645bfc37baa15b3df) ✔️ Cost function improvement debugged
 
+✔️ Dataset of initial solutions computed (https://github.com/Rob174/MaitriseClustering/issues/9)
+⏲️ Compare HMeans
+✔️ Fix bug solution not improcved after improvement_hmeans
+
+✔️ done and tested ; 🔨 done not tested ; ⏲️ in progress ; ⏳ waiting for other scripts to finish ; 🚩 problem ; 🐛 bug ; 〰️ ok does the job but maybe to improve ; 🛑 pause ; 🛰️ release
+
 # TODO 
 1️⃣2️⃣3️⃣4️⃣5️⃣6️⃣7️⃣8️⃣9️⃣🔟 1️⃣ = most urgent 🔟 = can wait
 - 1️⃣ implement HMean

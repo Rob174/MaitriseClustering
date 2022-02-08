@@ -80,6 +80,7 @@ def hmeans(points_coords: np.ndarray, points_init_assign: np.ndarray, clust_init
             f"Initial clustering (chosen)",
             points_init_assign, clust_init_coords
         )
+    counter = 0
     while True:
         try:
             points_assign, clust_coords, cost = improvement_hmeans(
@@ -90,7 +91,7 @@ def hmeans(points_coords: np.ndarray, points_init_assign: np.ndarray, clust_init
                 ),
                 callback_stop=type_improvement
             )
-
+            counter += 1
             if callback_visu is not None:
                 callback_visu.register_cluster(
                     f"Intermediate choice",
