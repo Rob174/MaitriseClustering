@@ -30,7 +30,9 @@
 [12170d3](https://github.com/Rob174/MaitriseClustering/tree/12170d39a3338487e653c728a27259ab9b24d8ec) ⏲️ HMeans : cost optimization back to cost=init_cost+variation
 
 
-✔️ Cost function improvement debugged
+# Monday Feb 07 2022
+
+[02b0aae](https://github.com/Rob174/MaitriseClustering/tree/02b0aae950ecc2fe494d286645bfc37baa15b3df) ✔️ Cost function improvement debugged
 
 # TODO 
 1️⃣2️⃣3️⃣4️⃣5️⃣6️⃣7️⃣8️⃣9️⃣🔟 1️⃣ = most urgent 🔟 = can wait
