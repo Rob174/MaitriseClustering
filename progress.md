@@ -41,6 +41,8 @@
 
 [ef0dc92](https://github.com/Rob174/MaitriseClustering/tree/ef0dc9231e824e9ace1e2bda630b012367fd008f) ✔️ Fix bug solution not improcved after improvement_hmeans
 
+⏲️🐛 Global test algorithms with cache. Bug index out of bound. ; 🔨 Solved bugs and edge cases recompute_centroids 
+
 ✔️ done and tested ; 🔨 done not tested ; ⏲️ in progress ; ⏳ waiting for other scripts to finish ; 🚩 problem ; 🐛 bug ; 〰️ ok does the job but maybe to improve ; 🛑 pause ; 🛰️ release
 
 # TODO 

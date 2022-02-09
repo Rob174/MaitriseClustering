@@ -136,7 +136,7 @@ def random_centroids(points_coords, points_init_assign, num_clusters: int):
     return points_coords, points_init_assign, clust_coords
 
 
-def centroids_from_points(points_coords, points_init_assign):
+def centroids_from_points(points_coords: np.ndarray, points_init_assign: np.ndarray):
     centroids = np.unique(points_init_assign)
     Lcentroids = np.array(
         [np.mean(points_coords[points_init_assign == i], axis=0) for i in centroids])
@@ -150,3 +150,17 @@ def generate_init_solution(num_points: int, num_clusters: int, num_coordinates: 
     )
     return points_coords, points_assign, clust_coords
 
+def balance_slicing_of_points_assign(points_assign_slicing: np.ndarray, num_clusters: int):
+    clusters_in = np.unique(points_assign_slicing)
+    cluster_in_set = {c:i for i,c in enumerate(clusters_in)}
+    # Reformat clusters between 0 and num_clusters-1
+    for i in range(len(points_assign_slicing)):
+        new_cluster = cluster_in_set[points_assign_slicing[i]]
+        if new_cluster >= num_clusters:
+            points_assign_slicing[i] = np.random.randint(0, num_clusters)
+        else:
+            points_assign_slicing[i] = new_cluster
+    return points_assign_slicing
+            
+        
+    
