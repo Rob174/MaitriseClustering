@@ -5,7 +5,7 @@ import numpy as np
 
 class AbstractIterationOrder(ABC):
     def get_points_order(self, src_clust_id: int, num_clusters: int) -> Iterable:
-        assert num_clusters > 1, "We must have more than 1 cluster to choose a different cluster for the destination"
+        # assert num_clusters > 1, "We must have more than 1 cluster to choose a different cluster for the destination"
         return []
 
 

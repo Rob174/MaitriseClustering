@@ -136,11 +136,15 @@ def random_centroids(points_coords, points_init_assign, num_clusters: int):
     return points_coords, points_init_assign, clust_coords
 
 
-def centroids_from_points(points_coords: np.ndarray, points_init_assign: np.ndarray):
+def centroids_from_points(points_coords: np.ndarray, points_init_assign: np.ndarray, num_clusters: int):
     centroids = np.unique(points_init_assign)
-    Lcentroids = np.array(
-        [np.mean(points_coords[points_init_assign == i], axis=0) for i in centroids])
-    return Lcentroids
+    Lcentroids = []
+    for i in range(num_clusters):
+        if i in centroids:
+            Lcentroids.append(np.mean(points_coords[np.where(points_init_assign == i)],axis=0))
+        else:
+            Lcentroids.append(np.zeros((points_coords.shape[1],)))
+    return np.stack(Lcentroids,axis=0)
 
 
 def generate_init_solution(num_points: int, num_clusters: int, num_coordinates: int = 2):
@@ -151,6 +155,7 @@ def generate_init_solution(num_points: int, num_clusters: int, num_coordinates: 
     return points_coords, points_assign, clust_coords
 
 def balance_slicing_of_points_assign(points_assign_slicing: np.ndarray, num_clusters: int):
+    np.random.seed(0)
     clusters_in = np.unique(points_assign_slicing)
     cluster_in_set = {c:i for i,c in enumerate(clusters_in)}
     # Reformat clusters between 0 and num_clusters-1

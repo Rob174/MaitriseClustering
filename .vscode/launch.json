@@ -4,6 +4,12 @@
     // Pour plus d'informations, visitez : https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [{
+            "name": "single_run",
+            "type": "python",
+            "request": "launch",
+            "module": "repr_partitions_cluster.experiments.single_run"
+        },
+        {
             "name": "compare_hmeans",
             "type": "python",
             "request": "launch",

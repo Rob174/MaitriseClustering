@@ -27,7 +27,7 @@ def kmean(points_coords: np.ndarray, points_assign: np.ndarray, clust_coords: np
             else:
                 new_center = np.mean(
                     points_coords[points_ids], axis=0)
-                assert not np.isnan(new_center).any(), "new_center is nan"
+                # assert not np.isnan(new_center).any(), "new_center is nan"
             if not equals(new_center, clust_coords[i_center]):
                 change = True
             clust_coords[i_center] = new_center

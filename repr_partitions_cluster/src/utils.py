@@ -53,7 +53,7 @@ def update_cost(
         # considering that a cluster with one point and an empty cluster have both  a cost of 0
         part2 = nl/(nl-1)*np.sum((center_src-xi)**2)
         new_cost -= part2
-    assert new_cost >= 0, f"Cost must be positive, {new_cost}={initial_cost}+{part1}-{part2}\n Details:\n {xi=}\n {nl=}\n {nj=}\n {updated_center_src=}\n {updated_center_dst=}"
+    # assert new_cost >= 0, f"Cost must be positive, {new_cost}={initial_cost}+{part1}-{part2}\n Details:\n {xi=}\n {nl=}\n {nj=}\n {updated_center_src=}\n {updated_center_dst=}"
     return new_cost
 
 

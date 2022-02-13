@@ -11,6 +11,7 @@ from repr_partitions_cluster.src.hmeans.improvement_choice import AbstractCallba
 from repr_partitions_cluster.src.utils import *
 from repr_partitions_cluster.src.visualize import VisualizationCallback, VisualizeClusterList
 from repr_partitions_cluster.src.hmeans.iteration_order import AbstractIterationOrder, BACK
+from numba import jit
 
 
 def improvement_hmeans(points_coords: np.ndarray, points_init_assign: np.ndarray, clust_init_coords: np.ndarray, initial_cost: float, iteration_order: AbstractIterationOrder,
@@ -28,7 +29,10 @@ def improvement_hmeans(points_coords: np.ndarray, points_init_assign: np.ndarray
         new_cost (float): cost of the new solution
     """
     clust_coords = clust_init_coords.copy()
-    num_assign_to_clust = np.unique(points_init_assign, return_counts=True)[1]
+    assignement = {index: num for index, num in zip(
+        *np.unique(points_init_assign, return_counts=True))}
+    num_assign_to_clust = np.array(
+        [assignement[i] if i in assignement else 0 for i in range(len(clust_coords))])
     callback_stop.initialize(initial_cost)
     if callback_visu is not None:
         callback_visu.register_points(points_coords)
@@ -59,7 +63,6 @@ def improvement_hmeans(points_coords: np.ndarray, points_init_assign: np.ndarray
                 point_moving_id, from_clust_id, to_clust_id,
                 new_xlcenter, new_xjcenter
             )
-            assert new_cost >= 0, "Cost must be positive"
             if callback_stop.stop_loop(point_moving_id, from_clust_id, to_clust_id,
                                        new_xlcenter, new_xjcenter, new_cost):
                 return callback_stop.get_new_clustering(points_init_assign, clust_init_coords)
@@ -67,7 +70,9 @@ def improvement_hmeans(points_coords: np.ndarray, points_init_assign: np.ndarray
 
 
 def hmeans(points_coords: np.ndarray, points_init_assign: np.ndarray, clust_init_coords: np.ndarray, initial_cost: float,
-           type_improvement: AbstractCallbackImprovement, iteration_order: AbstractIterationOrder = None, callback_visu: VisualizationCallback = None
+           type_improvement: AbstractCallbackImprovement,
+           iteration_order: AbstractIterationOrder = None,
+           callback_visu: VisualizationCallback = None, *args
            ):
     if iteration_order is None:
         iteration_order = BACK()
@@ -84,11 +89,10 @@ def hmeans(points_coords: np.ndarray, points_init_assign: np.ndarray, clust_init
     while True:
         try:
             points_assign, clust_coords, cost = improvement_hmeans(
-                points_coords, points_assign, clust_coords, cost, 
+                points_coords, points_assign, clust_coords, cost,
                 iteration_order=iteration_order,
-                callback_visu=VisualizationCallback(
-                    VisualizeClusterList(x0=0, x1=1)
-                ),
+                callback_visu=None if callback_visu is None else VisualizationCallback(
+                    VisualizeClusterList(x0=0, x1=1)),
                 callback_stop=type_improvement
             )
             counter += 1
@@ -99,4 +103,7 @@ def hmeans(points_coords: np.ndarray, points_init_assign: np.ndarray, clust_init
                 )
         except NoImprSolutionFound:
             break
-    return points_assign, clust_coords, cost
+    if counter == 0 and callback_visu is not None:
+        callback_visu.show()
+        i = input("Press enter to continue")
+    return points_assign, clust_coords, cost, counter

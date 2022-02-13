@@ -80,10 +80,13 @@ class VisualizeClusterList(VisualizeCluster):
                          symbol="cluster", size="iscentroid", animation_frame="step", color="cluster"
                          )
         # Thanks to https://community.plotly.com/t/dynamic-animation-title-annotation/38747/6
-        for button in fig.layout.updatemenus[0].buttons:
-            button['args'][1]['frame']['redraw'] = True
-        for k in range(len(fig.frames)):
-            fig.frames[k]['layout'].update(title_text=Lclusters[k]['title'])
+        try:
+            for button in fig.layout.updatemenus[0].buttons:
+                button['args'][1]['frame']['redraw'] = True
+            for k in range(len(fig.frames)):
+                fig.frames[k]['layout'].update(title_text=Lclusters[k]['title'])
+        except IndexError:
+            pass
         fig.update_layout(
             xaxis_title=f'$x_{self.x0}$',
             yaxis_title=f'$x_{self.x1}$'
