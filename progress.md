@@ -45,8 +45,16 @@
 
 [c1ff958](https://github.com/Rob174/MaitriseClustering/tree/c1ff958b0ce7b672fb7d88ec701221941e7da945) 🔨 Solved bugs and edge cases recompute_centroids 
 
+# Sunday Feb 13 2022
+[62b4b48](https://github.com/Rob174/MaitriseClustering/tree/62b4b4879a9bd65e3e1f3df75a40f5c551e4d115) ✔️ Corrections multiprocessing : wrong data passed by the generator due to multiprocessing 
 
-✔️ Corrections multiprocessing : wrong data passed by the generator due to multiprocessing ; ✔️ Notebook for results ; ✔️ Removing unecessary balancing ; ✔️ Taking into account empty clusters
+[62b4b48](https://github.com/Rob174/MaitriseClustering/tree/62b4b4879a9bd65e3e1f3df75a40f5c551e4d115) ✔️ Notebook for results 
+
+[62b4b48](https://github.com/Rob174/MaitriseClustering/tree/62b4b4879a9bd65e3e1f3df75a40f5c551e4d115) ✔️ Removing unecessary balancing 
+
+[62b4b48](https://github.com/Rob174/MaitriseClustering/tree/62b4b4879a9bd65e3e1f3df75a40f5c551e4d115) ✔️ Taking into account empty clusters
+
+
 ✔️ done and tested ; 🔨 done not tested ; ⏲️ in progress ; ⏳ waiting for other scripts to finish ; 🚩 problem ; 🐛 bug ; 〰️ ok does the job but maybe to improve ; 🛑 pause ; 🛰️ release
 
 # TODO 
