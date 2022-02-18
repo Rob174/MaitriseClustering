@@ -32,9 +32,9 @@ class AbstractCallbackImprovement:
     def stop_loop(self, point_moving_id, from_clust_id, to_clust_id, new_orig_clust_coord, new_dest_clust_coord, cost_improvement):
         raise NotImplemented
 
-    def get_new_clustering(self, points_init_assign: np.ndarray, clust_init_coords: np.ndarray) -> Tuple[np.ndarray, np.ndarray, float]:
+    def get_new_clustering(self, points_init_assign: np.ndarray, clust_init_coords: np.ndarray) -> Optional[Tuple[np.ndarray, np.ndarray, float]]:
         """Get the improving solution if one has been found else raise Exception
-        # Input """
+        Returns None if no improving solution has been found """
         # If one improving solution has been found return it
         if self.best_center_orig is not None and self.best_cost < self.initial_cost:
             return (*move(
@@ -42,7 +42,7 @@ class AbstractCallbackImprovement:
                 self.best_pt_to_move_id, self.best_center_orig, self.best_center_dest,  # type: ignore
                 self.best_new_orig_clust_coord, self.best_new_dest_clust_coord  # type: ignore
             ), self.best_cost)
-        raise NoImprSolutionFound
+        return None
 
 
 class CallbackBestImprovement(AbstractCallbackImprovement):

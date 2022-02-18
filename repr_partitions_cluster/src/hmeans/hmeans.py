@@ -33,7 +33,7 @@ def improvement_hmeans(
     iteration_order: AbstractIterationOrder,
     callback_stop: AbstractCallbackImprovement,
     callback_visu: VisualizationCallback = None,
-) -> Tuple[np.ndarray, np.ndarray, float]:
+) -> Tuple[Tuple[np.ndarray, np.ndarray, float], int]:
     """
     Local search algorithm using HMeans method to get a neighborhood. This algorithm takes the best or first neighboor for the improvement step.
     # Inputs:
@@ -110,13 +110,13 @@ def improvement_hmeans(
                 new_cost,
             ):
                 return (
-                    *callback_stop.get_new_clustering(
+                    callback_stop.get_new_clustering(
                         points_init_assign, clust_init_coords
                     ),
                     num_iter,
                 )
     return (
-        *callback_stop.get_new_clustering(points_init_assign, clust_init_coords),
+        callback_stop.get_new_clustering(points_init_assign, clust_init_coords),
         num_iter,
     )
 
@@ -144,26 +144,27 @@ def hmeans(
     counter = 0
     counter_tot = 0
     while True:
-        try:
-            points_assign, clust_coords, cost, num_iter = improvement_hmeans(
-                points_coords,
-                points_assign,
-                clust_coords,
-                cost,
-                iteration_order=iteration_order,
-                callback_visu=None
-                if callback_visu is None
-                else VisualizationCallback(VisualizeClusterList(x0=0, x1=1)),
-                callback_stop=type_improvement,
-            )
-            counter += 1
-            counter_tot += num_iter
+        clustering, num_iter = improvement_hmeans(
+            points_coords,
+            points_assign,
+            clust_coords,
+            cost,
+            iteration_order=iteration_order,
+            callback_visu=None
+            if callback_visu is None
+            else VisualizationCallback(VisualizeClusterList(x0=0, x1=1)),
+            callback_stop=type_improvement,
+        )
+        counter += 1
+        counter_tot += num_iter
+        if clustering is None:
+            break
+        else:
+            points_assign, clust_coords, cost = clustering
             if callback_visu is not None:
                 callback_visu.register_cluster(
                     f"Intermediate choice", points_assign, clust_coords
                 )
-        except NoImprSolutionFound:
-            break
     if counter == 0 and callback_visu is not None:
         callback_visu.show()
         i = input("Press enter to continue")
