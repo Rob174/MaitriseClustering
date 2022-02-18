@@ -76,6 +76,7 @@ def wrapper(args):
         "init_cost": init_cost,
         "end_cost": end_cost,
         "num_iter": num_iter,
+        "num_iter_tot": num_iter_tot,
         "time": time,
         "uuid_points_coords": uuid_points_coords,
         "uuid_points_assign": uuid_points_assign
