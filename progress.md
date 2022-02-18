@@ -61,14 +61,3 @@
 
 # TODO 
 1️⃣2️⃣3️⃣4️⃣5️⃣6️⃣7️⃣8️⃣9️⃣🔟 1️⃣ = most urgent 🔟 = can wait
-- 1️⃣ implement HMean
-  - BI version
-  - FI version
-    - search cluster from after first cluster CURR
-    - search cluster from first cluster in the list of clusters BACK
-    - shuffle order of cluster after first choice RAND
-  
-
-Suite
-1️⃣ Debugguer HMean
-2️⃣ Test best et first improvement
