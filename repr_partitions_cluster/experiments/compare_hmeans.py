@@ -61,7 +61,7 @@ def wrapper(args):
     *args_hmeans_non_result, init_cost, num_clusters, num_points, init_type, ImprClass, iteration_order, uuid_points_coords, uuid_points_assign = args
         
     with catchtime() as t:
-        points_assign, clust_coords, end_cost, num_iter = hmeans(
+        points_assign, clust_coords, end_cost, num_iter,num_iter_tot = hmeans(
             *args_hmeans_non_result, initial_cost=init_cost, type_improvement=ImprClass(), iteration_order=iteration_order,
             # callback_visu=VisualizationCallback(
             #     VisualizeClusterList(x0=0, x1=1))
