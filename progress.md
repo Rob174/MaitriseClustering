@@ -54,8 +54,8 @@
 
 [62b4b48](https://github.com/Rob174/MaitriseClustering/tree/62b4b4879a9bd65e3e1f3df75a40f5c551e4d115) ✔️ Taking into account empty clusters
 
-
-✔️ KMeans+ : Correction change detected
+# Thursday Feb 17 2022
+[fc65f01](https://github.com/Rob174/MaitriseClustering/tree/fc65f01583bb32a9874df69bfe2c60db1771ce66) ✔️ KMeans+ : Correction change detected
 
 ✔️ done and tested ; 🔨 done not tested ; ⏲️ in progress ; ⏳ waiting for other scripts to finish ; 🚩 problem ; 🐛 bug ; 〰️ ok does the job but maybe to improve ; 🛑 pause ; 🛰️ release
 
