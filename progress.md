@@ -57,7 +57,7 @@
 # Thursday Feb 17 2022
 [fc65f01](https://github.com/Rob174/MaitriseClustering/tree/fc65f01583bb32a9874df69bfe2c60db1771ce66) ✔️ KMeans+ : Correction change detected
 
-✔️ Saving total number of iterations
+✔️ Saving total number of iterations 
 ✔️ done and tested ; 🔨 done not tested ; ⏲️ in progress ; ⏳ waiting for other scripts to finish ; 🚩 problem ; 🐛 bug ; 〰️ ok does the job but maybe to improve ; 🛑 pause ; 🛰️ release
 
 # TODO 
