@@ -11,6 +11,7 @@ from repr_partitions_cluster.src.hmeans.iteration_order import BACK, CURR, RANDO
 from rich.progress import track
 import multiprocessing as mp
 import time
+from repr_partitions_cluster.src.generators import generate_random_points
 
 
 def generator():
@@ -20,45 +21,47 @@ def generator():
             np.arange(20, 91, 10),
             np.arange(100, 1001, 100)
         ), axis=0)
-    PATH = Path("./data/inputs_algorithms.hdf5")
-
-    with File(PATH, "r") as f:
-        for uuid_points_coords, points_coords in f["points_coords"].items():
-            
-            points_coords = np.array(points_coords, dtype=np.float32)
-            for num_points in L_NUM_POINTS:
-                subset_points_coords: np.ndarray = points_coords[:num_points]
-                for num_clust, datasets_points_assign in f["points_assign"].items():
-                    num_clusters = int(num_clust)
-                    if num_clusters >= num_points:
-                        continue
-                    for uuid_points_assign, points_assign in datasets_points_assign.items():
-                        points_assign = np.array(points_assign, dtype=np.int32)
-                        subset_points_assign = points_assign[:num_points]
-                        subset_clust_coords = np.stack(
-                            centroids_from_points(
-                                subset_points_coords, subset_points_assign, num_clusters
-                            ), axis=0
-                        )
-                        points_assign_impr, clust_coords_impr = kmean(
-                            subset_points_coords, np.copy(
-                                subset_points_assign), np.copy(subset_clust_coords)
-                        )
-                        for params, init_type in list(zip([(subset_points_coords, subset_points_assign, subset_clust_coords), (subset_points_coords, points_assign_impr, clust_coords_impr)], ["random", "kmean+"])):
-                            init_cost = cost(*params)
-                            for ImprClass in [CallbackBestImprovement, CallbackFirstImprovement]:
-                                if ImprClass.__name__ == "CallbackFirstImprovement":
-                                    iteration_orders = [
-                                        CURR(), BACK(), RANDOM()]
-                                else:
-                                    iteration_orders = [BACK()]
-                                for iteration_order in iteration_orders:
-                                    # Important: make a copy of the parameters to avoid problems with multiprocessig
-                                    yield np.copy(params[0]),np.copy(params[1]),np.copy(params[2]), init_cost, num_clusters, num_points, init_type, ImprClass, iteration_order, uuid_points_coords, uuid_points_assign
+    NUM_COORDINATES = 2
+    np.random.seed(0)
+    global_index = -1
+    for num_points in L_NUM_POINTS:
+        for num_clusters in L_NUM_CLUSTERS:
+            if num_clusters >= num_points:
+                continue
+            for init_type in ["random", "kmean+"]:
+                init_cost = cost(*params)
+                for ImprClass in [CallbackBestImprovement, CallbackFirstImprovement]:
+                    if ImprClass.__name__ == "CallbackFirstImprovement":
+                        iteration_orders = [
+                            CURR(), BACK(), RANDOM()]
+                    else:
+                        iteration_orders = [BACK()]
+                    for iteration_order in iteration_orders:
+                        for _ in range(1000):
+                            points_coords = generate_random_points(
+                                num_points, num_coordinates=NUM_COORDINATES,seed=None
+                            )
+                            points_assign = np.random.randint(
+                                0, num_clusters, size=max(L_NUM_POINTS)
+                            )
+                            clust_coords = np.stack(
+                                centroids_from_points(
+                                    points_coords, points_assign, num_clusters
+                                ), axis=0
+                            )
+                            if init_type == "kmean+":
+                                points_assign, clust_coords = kmean(
+                                    (points_coords), np.copy(points_assign), np.copy(clust_coords)
+                                )
+                            
+                            init_cost = cost(points_coords, points_assign, clust_coords)
+                            global_index += 1
+                            # Important: make a copy of the parameters to avoid problems with multiprocessig
+                            yield np.copy(points_coords),np.copy(points_assign),np.copy(clust_coords), init_cost, num_clusters, num_points, init_type, ImprClass, iteration_order,global_index 
 
 
 def wrapper(args):
-    *args_hmeans_non_result, init_cost, num_clusters, num_points, init_type, ImprClass, iteration_order, uuid_points_coords, uuid_points_assign = args
+    *args_hmeans_non_result, init_cost, num_clusters, num_points, init_type, ImprClass, iteration_order, global_index = args
         
     with catchtime() as t:
         points_assign, clust_coords, end_cost, num_iter,num_iter_tot = hmeans(
@@ -78,8 +81,7 @@ def wrapper(args):
         "num_iter": num_iter,
         "num_iter_tot": num_iter_tot,
         "time": time,
-        "uuid_points_coords": uuid_points_coords,
-        "uuid_points_assign": uuid_points_assign
+        "global_index": global_index
     }
     PATH_RES = Path("./data/algos_results.csv")
     lock.acquire()
