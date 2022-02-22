@@ -24,9 +24,9 @@ def generator():
 
     with File(PATH, "r") as f:
         for uuid_points_coords, points_coords in f["points_coords"].items():
+            
             points_coords = np.array(points_coords, dtype=np.float32)
             for num_points in L_NUM_POINTS:
-                print(f"{num_points=}")
                 subset_points_coords: np.ndarray = points_coords[:num_points]
                 for num_clust, datasets_points_assign in f["points_assign"].items():
                     num_clusters = int(num_clust)
@@ -106,6 +106,7 @@ if __name__ == "__main__":
             "init_cost",
             "end_cost",
             "num_iter",
+            "num_iter_tot",
             "time",
             "uuid_points_coords",
             "uuid_points_assign",
