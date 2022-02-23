@@ -61,8 +61,10 @@
 
 
 # Wednesday Feb 23 2022
-✔️ Data completely generated
-✔️ Changing visualization to see cluster results and adding scale nb points/cluster
+
+[df00a6f](https://github.com/Rob174/MaitriseClustering/tree/df00a6f38824f645ff5b53350fe46f47fa4e3f3b) ✔️ Data completely generated
+
+[df00a6f](https://github.com/Rob174/MaitriseClustering/tree/df00a6f38824f645ff5b53350fe46f47fa4e3f3b) ✔️ Changing visualization to see cluster results and adding scale nb points/cluster
 
 ✔️ done and tested ; 🔨 done not tested ; ⏲️ in progress ; ⏳ waiting for other scripts to finish ; 🚩 problem ; 🐛 bug ; 〰️ ok does the job but maybe to improve ; 🛑 pause ; 🛰️ release
 
