@@ -59,6 +59,11 @@
 
 [93e94e0](https://github.com/Rob174/MaitriseClustering/tree/93e94e0c4ac5e5bce7e430aa5c61692532743fd6) ✔️ Saving total number of iterations 
 
+
+# Wednesday Feb 23 2022
+✔️ Data completely generated
+✔️ Changing visualization to see cluster results and adding scale nb points/cluster
+
 ✔️ done and tested ; 🔨 done not tested ; ⏲️ in progress ; ⏳ waiting for other scripts to finish ; 🚩 problem ; 🐛 bug ; 〰️ ok does the job but maybe to improve ; 🛑 pause ; 🛰️ release
 
 # TODO 
