@@ -29,7 +29,6 @@ def generator():
             if num_clusters >= num_points:
                 continue
             for init_type in ["random", "kmean+"]:
-                init_cost = cost(*params)
                 for ImprClass in [CallbackBestImprovement, CallbackFirstImprovement]:
                     if ImprClass.__name__ == "CallbackFirstImprovement":
                         iteration_orders = [
@@ -39,10 +38,10 @@ def generator():
                     for iteration_order in iteration_orders:
                         for _ in range(1000):
                             points_coords = generate_random_points(
-                                num_points, num_coordinates=NUM_COORDINATES,seed=None
+                                num_points, num_coordinates=NUM_COORDINATES
                             )
                             points_assign = np.random.randint(
-                                0, num_clusters, size=max(L_NUM_POINTS)
+                                0, num_clusters, size=num_points
                             )
                             clust_coords = np.stack(
                                 centroids_from_points(
@@ -110,8 +109,7 @@ if __name__ == "__main__":
             "num_iter",
             "num_iter_tot",
             "time",
-            "uuid_points_coords",
-            "uuid_points_assign",
+            "global_index"
         ])+"\n")
     # From https://stackoverflow.com/questions/25557686/python-sharing-a-lock-between-processes
     lock = mp.Lock()

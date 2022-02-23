@@ -92,7 +92,8 @@ def generate_random_points(num_points: int, num_coordinates: int = 2) -> np.ndar
         [num_points, num_coordinates] for points coordinates 
     """
     points_coords = np.random.uniform(
-        low=0, high=100, size=(num_points, num_coordinates))
+        low=0, high=100, size=(num_points, num_coordinates)
+        )
     return points_coords
 
 
