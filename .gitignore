@@ -131,3 +131,5 @@ dmypy.json
 venv/
 data/
 *.ai
+version_c/avg_time
+version_c/main

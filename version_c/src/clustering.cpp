@@ -23,40 +23,28 @@ std::tuple<Config*,IterationOrder*> get_config(int argc, char **argv)
 void initialize(Clustering *clustering, Config *config)
 {
     // Initialize points coordinates
-    clustering->p_c = (double**)malloc(config->NUM_DIM * sizeof(double*));
-    for (int i = 0; i < config->NUM_POINTS; i++)
-    {
-        clustering->p_c[i] = (double*)malloc(config->NUM_DIM * sizeof(double));
-        for (int d = 0; d < config->NUM_DIM; d++)
-        {
-            clustering->p_c[i][d] = prandom(GRID_COORD_MIN, GRID_COORD_MAX);
-        }
-    }
+    clustering->p_c = new double[config->NUM_POINTS*config->NUM_DIM];
+    for (int i = 0; i < config->NUM_POINTS*config->NUM_DIM; i++)
+        clustering->p_c[i] = prandom(GRID_COORD_MIN, GRID_COORD_MAX);
     // Initialize cluster intial assignements
-    clustering->c_a = (int*)malloc(config->NUM_POINTS * sizeof(int));
+    clustering->c_a = new int[config->NUM_POINTS];
     for (int i = 0; i < config->NUM_POINTS; i++)
         clustering->c_a[i] = (int)prandom(0, config->NUM_CLUST);
     // Initialize number of points per cluster
-    clustering->n_p_p_c = (int*)malloc(config->NUM_CLUST * sizeof(int));
+    clustering->n_p_p_c =new int[config->NUM_CLUST];
     for (int i = 0; i < config->NUM_CLUST; i++)
         clustering->n_p_p_c[i] = 0;
     // Initialize cluster centroids
-    clustering->c_c = (double**)malloc(config->NUM_CLUST * sizeof(double *));
-    for (int i = 0; i < config->NUM_CLUST; i++)
-    {
-        clustering->c_c[i] = (double*)malloc(config->NUM_DIM * sizeof(double));
-        for (int j = 0; j < config->NUM_DIM; j++)
-        {
-            clustering->c_c[i][j] = 0.;
-        }
-    }
+    clustering->c_c = new double[config->NUM_CLUST*config->NUM_DIM];
+    for (int i = 0; i < config->NUM_CLUST*config->NUM_DIM; i++)
+        clustering->c_c[i] = 0.;
     // Compute cluster centroids
     for (int i = 0; i < config->NUM_POINTS; i++)
     {
-        int cluster_id = clustering->c_a[i];
+        int cluster_id = clustering->c_a[i*config->NUM_DIM];
         for (int j = 0; j < config->NUM_DIM; j++)
         {
-            clustering->c_c[cluster_id][j] += clustering->p_c[i][j];
+            clustering->c_c[cluster_id*config->NUM_CLUST+j] += clustering->p_c[i*config->NUM_POINTS+j];
             clustering->n_p_p_c[cluster_id]++;
         }
     }
@@ -64,7 +52,7 @@ void initialize(Clustering *clustering, Config *config)
     {
         for (int j = 0; j < config->NUM_DIM; j++)
         {
-            clustering->c_c[i][j] /= clustering->n_p_p_c[i];
+            clustering->c_c[i*config->NUM_CLUST+j] /= clustering->n_p_p_c[i];
         }
     }
 }

@@ -32,10 +32,9 @@ int main(int argc, char *argv[])
         {
             int from_cluster_id = clustering.c_a[point_moving_id];
             order->restart(from_cluster_id);
-            for (int to_clust_id = 0; to_clust_id < config->NUM_CLUST; to_clust_id++)
+            int to_clust_id = order->next();
+            while (to_clust_id != -1)
             {
-                if (to_clust_id == from_cluster_id)
-                    continue;
                 double modif = cost_modif(
                     &clustering,
                     from_cluster_id, to_clust_id,
@@ -48,6 +47,7 @@ int main(int argc, char *argv[])
                     j = to_clust_id;
                     goto outloop;
                 }
+                to_clust_id = order->next();
             }
         }
     outloop:
@@ -57,7 +57,7 @@ int main(int argc, char *argv[])
         else
         {
             // Update cluster assignements
-            update(&clustering, l, j, i, ->config);
+            update(&clustering, l, j, i, config);
             cost += vij;
         }
         printf("iter\n");

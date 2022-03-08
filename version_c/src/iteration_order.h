@@ -1,9 +1,8 @@
 #ifndef ITERATION_ORDER_H
 #define ITERATION_ORDER_H
-#include "clustering.h"
+#include "constants.h"
 #include <iostream>
 #include <string>
-
 class IterationOrder
 {
 protected:
@@ -43,7 +42,7 @@ public:
 };
 class IterationOrderFactory
 {
-    public:
+public:
     static IterationOrder *create(Config *config, int type);
     static void print_doc();
 };
