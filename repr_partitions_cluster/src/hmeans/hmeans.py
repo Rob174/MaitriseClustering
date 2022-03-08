@@ -73,7 +73,7 @@ def improvement_hmeans(
                 point_moving_id,
                 from_clust_id,
                 to_clust_id,
-            )
+            ) # TODO : pas à mettre ici -> à mettre une fois que le nouvelle
             if callback_visu is not None:
                 tested_points_assign, tested_clust_coords = move(
                     np.copy(points_init_assign),
@@ -150,9 +150,7 @@ def hmeans(
             clust_coords,
             cost,
             iteration_order=iteration_order,
-            callback_visu=None
-            if callback_visu is None
-            else VisualizationCallback(VisualizeClusterList(x0=0, x1=1)),
+            callback_visu=None if callback_visu is None else VisualizationCallback(VisualizeClusterList(x0=0, x1=1)),
             callback_stop=type_improvement,
         )
         counter += 1
