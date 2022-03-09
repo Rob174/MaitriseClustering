@@ -7,7 +7,9 @@
 #include <iostream>
 #include "iteration_order.h"
 #include "constants.h"
+#include "results.h"
+#include "improvementChoice.h"
 
-std::tuple<Config *, IterationOrder *> get_config(int argc, char **argv);
-void initialize(Clustering *clustering, Config *config);
+std::tuple<Config*, IterationOrder*, ImprovementChoice*, Result*> get_config(int argc, char** argv);
+void initialize(Clustering* clustering, Config* config);
 #endif

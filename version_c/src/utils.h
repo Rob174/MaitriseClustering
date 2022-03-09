@@ -3,6 +3,6 @@
 #include <time.h>
 #include "clustering.h"
 
-double dist(double *p1, double *p2, Config *config);
-double prandom(double min, double max);
+float dist(float* p1, float* p2, Config* config);
+float prandom(float min, float max);
 #endif

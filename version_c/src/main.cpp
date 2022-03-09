@@ -11,22 +11,27 @@
 
 #define UNINITIALIZED -1
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
     srand((unsigned int)time(NULL));
+
     auto params = get_config(argc, argv);
-    Config *config = std::get<0>(params);
-    IterationOrder *order = std::get<1>(params);
+    Config* config = std::get<0>(params);
+    IterationOrder* order = std::get<1>(params);
+    ImprovementChoice* impr = std::get<2>(params);
+    Result* result = std::get<3>(params);
+
     // Define initial clustering
     Clustering clustering;
     initialize(&clustering, config);
-    double cost = initial_cost(&clustering, config);
+    float cost = initial_cost(&clustering, config);
+    result->set_init_cost(cost);
     // Local seach
-    int improvement = 1;
-    int step = 0;
+    bool improvement = true;
+    result->set_time_start();
     while (improvement)
     {
-        double vij = 0;
+        float vij = 0;
         int l = UNINITIALIZED, j = UNINITIALIZED, i = UNINITIALIZED;
         for (int point_moving_id = 0; point_moving_id < config->NUM_POINTS; point_moving_id++)
         {
@@ -35,34 +40,36 @@ int main(int argc, char *argv[])
             int to_clust_id = order->next();
             while (to_clust_id != -1)
             {
-                double modif = cost_modif(
+                float modif = cost_modif(
                     &clustering,
                     from_cluster_id, to_clust_id,
-                    &(clustering.p_c[point_moving_id * config->NUM_DIM]), config);
+                    &(clustering.p_c[point_moving_id * config->NUM_DIM]), config
+                );
                 if (modif < vij)
                 {
                     vij = modif;
                     i = point_moving_id;
                     l = from_cluster_id;
                     j = to_clust_id;
-                    goto outloop;
+                    if(impr->stop_loop(vij))
+                        goto outloop;
                 }
                 to_clust_id = order->next();
+                result->set_next_iter_glob();
             }
         }
     outloop:
-        step++;
         if (i == UNINITIALIZED)
-            improvement = 0;
+            improvement = false;
         else
         {
             // Update cluster assignements
             update(&clustering, l, j, i, config);
             cost += vij;
-            double ref_cost = initial_cost(&clustering, config);
-            printf("Step %d:Cost %f ; ref cost %f ; vij %f ; diff %f\n", step, cost, ref_cost,vij, cost - ref_cost);
-            if (fabs(ref_cost - cost) > 1000)
-                improvement = 0;
+            result->set_next_iter();
         }
     }
+    result->set_final_cost(cost);
+    result->set_time_end();
+    result->print_results();
 }

@@ -1,8 +1,8 @@
 #include "utils.h"
 
-double dist(double *p1, double *p2, Config *config)
+float dist(float* p1, float* p2, Config* config)
 {
-    double dist = 0.0;
+    float dist = 0.0;
     for (int i = 0; i < config->NUM_DIM; i++)
     {
         dist += (p1[i] - p2[i]) * (p1[i] - p2[i]);
@@ -10,7 +10,7 @@ double dist(double *p1, double *p2, Config *config)
     return dist;
 }
 
-double prandom(double min, double max)
+float prandom(float min, float max)
 {
-    return min + ((double)rand() / (double)(RAND_MAX)) * (max - min);
+    return min + ((float)rand() / (float)(RAND_MAX)) * (max - min);
 }
