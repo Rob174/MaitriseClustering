@@ -15,6 +15,10 @@ typedef struct _Config
     int NUM_POINTS;
     int NUM_DIM;
     int NUM_CLUST;
+    int IMPR_CLASS;
+    int IT_ORDER;
+    int INIT_CHOICE;
+    int SEED;
 }Config;
 
 #endif

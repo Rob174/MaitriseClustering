@@ -25,7 +25,7 @@ float cost_modif(Clustering* c, int f, int t, float* point, Config* config)
         part2 = (float)(c->n_p_p_c[f]) / (float)(c->n_p_p_c[f] - 1) * dist(&(c->c_c[f * config->NUM_DIM]), point, config);
     }
     if (fabs(part1 - part2) > 2*100*100) {
-        printf("Error\n");
+        printf("Error improvement too high\n");
         exit(1);
     }
     return part1 - part2;
@@ -56,4 +56,22 @@ void update(Clustering* c, int f, int t, int p, Config* config)
     }
     // update assignement
     c->c_a[p] = t;
+}
+std::tuple<float*, float*> compute_new_centroids(Clustering const * c, int f, int t, int p, Config* config) {
+    // Does not modify clustering
+    float* point = &(c->p_c[p * config->NUM_DIM]);
+    float* new_f_center = new float[config->NUM_DIM];
+    float* new_t_center = new float[config->NUM_DIM];
+    for (int dim = 0; dim < config->NUM_DIM; dim++)
+    {
+        if (c->n_p_p_c[f] <= 1) // If we had one point
+            new_f_center[dim] = 0.;
+        else
+            new_f_center[dim] = (float)(c->n_p_p_c[f] * c->c_c[f * config->NUM_DIM + dim] - point[dim]) /
+            (float)(c->n_p_p_c[f] - 1);
+        new_t_center[dim] = (float)(c->n_p_p_c[t] * c->c_c[t * config->NUM_DIM + dim] + point[dim]) /
+            (float)(c->n_p_p_c[t] + 1);
+
+    }
+    return std::make_tuple(new_f_center, new_t_center);
 }

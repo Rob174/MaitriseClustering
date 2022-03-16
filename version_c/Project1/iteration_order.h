@@ -13,6 +13,7 @@ protected:
 public:
     IterationOrder(Config* config) : i(0), curr_clust_id(0), config(config) {};
     virtual void restart(int curr_clust_id);
+    virtual void end_loop() {};
     virtual int next() = 0;
 };
 class BACK : public IterationOrder
@@ -37,6 +38,7 @@ private:
 public:
     RANDOM(Config* config) : IterationOrder(config) {};
     void restart(int curr_clust_id);
+    void end_loop();
     int next_id();
     int next();
 };

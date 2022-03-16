@@ -25,7 +25,6 @@ int CURR::next()
 {
     if (this->i >= this->config->NUM_CLUST-1)
     {
-        // std::cout << "CURR::next()" << std::endl;
         return -1;
     }
     int a = (this->i + this->curr_clust_id + 1) % this->config->NUM_CLUST;
@@ -67,6 +66,9 @@ int RANDOM::next()
         return a;
     }
 }
+void RANDOM::end_loop() {
+    delete this->perm;
+}
 void IterationOrderFactory::print_doc()
 {
     std::cout << "IterationOrder:BACK (0) CURR (1) RANDOM (2)" << std::endl;
@@ -82,6 +84,7 @@ IterationOrder* IterationOrderFactory::create(Config* config, int type)
     case 2:
         return new RANDOM(config);
     default:
-        return new BACK(config);
+        std::cout << "Wrong argument IterationOrder " << type << std::endl;
+        exit(1);
     }
 }

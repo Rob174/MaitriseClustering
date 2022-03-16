@@ -22,7 +22,6 @@ def kmean(
     """
 
     def recompute_centroids(points_coords, points_assign, clust_coords):
-        change = False
         for i_center in range(len(clust_coords)):
             points_ids = np.where(points_assign == i_center)[0]
             if len(points_ids) == 0:

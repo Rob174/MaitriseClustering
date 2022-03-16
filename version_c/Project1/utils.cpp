@@ -10,6 +10,18 @@ float dist(float* p1, float* p2, Config* config)
     return dist;
 }
 
+bool same_points(float* p1, float* p2, Config* config)
+{
+    bool issame = true;
+    for (int i = 0; i < config->NUM_DIM; i++) {
+        if (p1[i] != p2[i]) {
+            issame = false;
+            break;
+        }
+    }
+    return issame;
+}
+
 float prandom(float min, float max)
 {
     return min + ((float)rand() / (float)(RAND_MAX)) * (max - min);

@@ -133,3 +133,12 @@ data/
 *.ai
 version_c/avg_time
 version_c/main
+version_c/.vs/
+version_c/Debug/
+version_c/enc_temp_folder/
+.tlog
+.tlog
+.obj
+version_c/Project1/x64/
+version_c/x64/
+version_c/Project1/Debug/
