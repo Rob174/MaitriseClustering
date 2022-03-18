@@ -5,10 +5,10 @@ typedef struct _Config Config;
 typedef struct _Clustering Clustering;
 typedef struct _Clustering
 {
-    float* p_c; // points coor
+    double* p_c; // points coor
     int* c_a;     // cluster assignements
     int* n_p_p_c; // num_pts_per_clust
-    float* c_c; // cluster_centroids
+    double* c_c; // cluster_centroids
 }Clustering;
 typedef struct _Config
 {

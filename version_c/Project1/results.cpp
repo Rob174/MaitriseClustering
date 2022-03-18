@@ -37,7 +37,7 @@ void Result::print_results() {
 		      << ",init_type:" << this->config->INIT_CHOICE 
 		      << ",ImprClass:" << this->config->IMPR_CLASS 
 		      << ",iteration_order:" << this->config->IT_ORDER 
-		      << ",init_cost:" << this->init_cost 
+		      << ",init_cost:" << std::fixed << std::setprecision(3) << this->init_cost
 		      << ",end_cost:" << this->final_cost 
 		      << ",num_iter:" << this->num_iter 
 		      << ",num_iter_tot:" << this->num_iter_glob 

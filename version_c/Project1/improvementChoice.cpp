@@ -31,7 +31,7 @@ bool FirstImpr::stop_loop()
 }
 
 
-void ImprovementChoice::choose_solution(ClusteringChoice*choice, Clustering* clustering, float sugg_vij, int sugg_i, int sugg_l, int sugg_j)
+void ImprovementChoice::choose_solution(ClusteringChoice*choice, Clustering* clustering, double sugg_vij, int sugg_i, int sugg_l, int sugg_j)
 {
     choice->vij = sugg_vij;
     choice->i = sugg_i;
@@ -44,18 +44,17 @@ bool ImprovementChoice::stop_loop()
     return false;
 }
 
-void DelayedImpr1::choose_solution(ClusteringChoice* choice, Clustering* clustering, float sugg_vij, int sugg_i, int sugg_l, int sugg_j)
+void DelayedImpr1::choose_solution(ClusteringChoice* choice, Clustering* clustering, double sugg_vij, int sugg_i, int sugg_l, int sugg_j)
 {
     int counter_not_closest = 0;
     auto former_dest_clust = compute_new_centroids(clustering, sugg_l, sugg_j, sugg_i, this->config);
-    float* new_f_center = std::get<0>(former_dest_clust);
-    float* new_t_center = std::get<1>(former_dest_clust);
-    float* centroid;
+    double* new_f_center = std::get<0>(former_dest_clust);
+    double* new_t_center = std::get<1>(former_dest_clust);
     for (int q = 0; q < this->config->NUM_POINTS; q++) {
         int min_centr = -1;
-        float min_dist = std::numeric_limits<float>::max();
+        double min_dist = std::numeric_limits<double>::max();
         for (int z = 0; z < this->config->NUM_CLUST; z++) {
-            float* centroid;
+            double* centroid;
             if (z == sugg_l) {
                 centroid = new_f_center;
             }
@@ -65,7 +64,7 @@ void DelayedImpr1::choose_solution(ClusteringChoice* choice, Clustering* cluster
             else {
                 centroid = &(clustering->c_c[z * this->config->NUM_DIM]);
             }
-            float d = dist(centroid, &(clustering->p_c[q * this->config->NUM_DIM]), this->config);
+            double d = dist(centroid, &(clustering->p_c[q * this->config->NUM_DIM]), this->config);
 
             if (d < min_dist) {
                 min_dist = d;

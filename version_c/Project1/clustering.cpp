@@ -29,7 +29,6 @@ std::tuple<Config*, IterationOrder*, ImprovementChoice*, Initializer* ,Result*> 
     return std::make_tuple(config, iteration_order,impr, initializer,result);
 }
 void clean(Config* config, Clustering*clust,IterationOrder* iteration_order, Result* result, ImprovementChoice* impr, Initializer* initializer) {
-    int a = 0;
     delete clust->p_c;
     delete clust->n_p_p_c;
     delete clust->c_a;
@@ -43,7 +42,7 @@ void clean(Config* config, Clustering*clust,IterationOrder* iteration_order, Res
 void initialize(Clustering* clustering, Config* config)
 {
     // Initialize points coordinates
-    clustering->p_c = new float[config->NUM_POINTS * config->NUM_DIM];
+    clustering->p_c = new double[config->NUM_POINTS * config->NUM_DIM];
     for (int i = 0; i < config->NUM_POINTS * config->NUM_DIM; i++)
         clustering->p_c[i] = prandom(GRID_COORD_MIN, GRID_COORD_MAX);
     // Initialize number of points per cluster
@@ -55,7 +54,7 @@ void initialize(Clustering* clustering, Config* config)
     for (int i = 0; i < config->NUM_POINTS; i++)
         clustering->c_a[i] = (int)prandom(0, (int)config->NUM_CLUST-1);
     // Initialize cluster centroids
-    clustering->c_c = new float[config->NUM_CLUST * config->NUM_DIM];
+    clustering->c_c = new double[config->NUM_CLUST * config->NUM_DIM];
     for (int i = 0; i < config->NUM_CLUST * config->NUM_DIM; i++)
         clustering->c_c[i] = 0.;
     // Compute cluster centroids

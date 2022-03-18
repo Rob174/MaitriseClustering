@@ -10,7 +10,7 @@ public:
 	int i;
 	int l;
 	int j;
-	float vij;
+	double vij;
 	int counter_not_closest;
 	ClusteringChoice() : i(UNINITIALIZED), l(UNINITIALIZED), j(UNINITIALIZED), vij(0), counter_not_closest(UNINITIALIZED){};
 };
@@ -19,7 +19,7 @@ private:
 	Result* result;
 public:
 	ImprovementChoice(Result* result) : result(result) {};
-	virtual void choose_solution(ClusteringChoice* choice, Clustering* clustering, float sugg_vij, int sugg_i, int sugg_l, int sugg_j);
+	virtual void choose_solution(ClusteringChoice* choice, Clustering* clustering, double sugg_vij, int sugg_i, int sugg_l, int sugg_j);
 	virtual bool stop_loop();
 };
 class BestImpr : public ImprovementChoice {
@@ -37,7 +37,7 @@ private:
 	Config* config;
 public:
 	DelayedImpr1(Result* result,Config*config) : BestImpr(result),config(config) {};
-	void choose_solution(ClusteringChoice* choice, Clustering* clustering, float sugg_vij, int sugg_i, int sugg_l, int sugg_j);
+	void choose_solution(ClusteringChoice* choice, Clustering* clustering, double sugg_vij, int sugg_i, int sugg_l, int sugg_j);
 };
 class ImprFactory {
 public:

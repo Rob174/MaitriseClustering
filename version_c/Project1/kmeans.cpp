@@ -21,7 +21,7 @@ void KMeansPlusInitializer::update_centroid(Clustering* clustering, Config* conf
     //2. Divide by number of points (already kept up to date in the algorithm)
     for (int i = 0; i < config->NUM_CLUST; i++) {
         for (int d = 0; d < config->NUM_DIM; d++) {
-            clustering->c_c[i * config->NUM_DIM + d] = clustering->c_c[i * config->NUM_DIM + d] / (float)(clustering->n_p_p_c[i]);
+            clustering->c_c[i * config->NUM_DIM + d] = clustering->c_c[i * config->NUM_DIM + d] / (double)(clustering->n_p_p_c[i]);
         }
     }
 }
@@ -31,16 +31,16 @@ void KMeansPlusInitializer::initialize(Clustering* clustering, Config* config) {
     int iter2 = 0;
     while (assignement_changed) {
         assignement_changed = false;
-        float* previous_assignement = new float[config->NUM_POINTS];
+        double* previous_assignement = new double[config->NUM_POINTS];
         for (int i = 0; i < config->NUM_POINTS; i++)
             previous_assignement[i] = clustering->c_a[i];
         for (int i = 0; i < config->NUM_POINTS; i++) {
-            float* point = &(clustering->p_c[i * config->NUM_DIM]);
+            double* point = &(clustering->p_c[i * config->NUM_DIM]);
             //We assign the point to its closest centroid
-            float best_d = std::numeric_limits<float>::max();
+            double best_d = std::numeric_limits<double>::max();
             int best_c = -1;
             for (int c = 0; c < config->NUM_CLUST; c++) {
-                float d = dist(point, &(clustering->p_c[c]), config);
+                double d = dist(point, &(clustering->p_c[c]), config);
                 if (d < best_d) {
                     best_d = d;
                     best_c = c;
@@ -69,18 +69,18 @@ void KMeansPlusInitializer::initialize(Clustering* clustering, Config* config) {
             }
         }
         //2. Get biggest top n distances to centroids, n number of empty clusters
-        auto cmp = [](std::tuple<int, float> t1, std::tuple<int, float> t2) {
+        auto cmp = [](std::tuple<int, double> t1, std::tuple<int, double> t2) {
             //with first corresponding point index and then distance
             const auto& [i1, d1] = t1;
             const auto& [i2, d2] = t2;
             return d1 > d2;
         };
         // REMINDER: set sorted : biggest element first : (binary tree)
-        std::set<std::tuple<int, float>, decltype(cmp)> distances;
+        std::set<std::tuple<int, double>, decltype(cmp)> distances;
         for (int i = 0; i < config->NUM_POINTS; i++) {
             for (int j = 0; j < config->NUM_CLUST; j++) {
-                float distance = dist(&(clustering->p_c[i * config->NUM_DIM]), &(clustering->c_c[j * config->NUM_DIM]), config);
-                if ((int)distances.size() < num_empty || (distances.begin() != distances.end() && distance > (float)std::get<1>(*std::prev(distances.end()))))
+                double distance = dist(&(clustering->p_c[i * config->NUM_DIM]), &(clustering->c_c[j * config->NUM_DIM]), config);
+                if ((int)distances.size() < num_empty || (distances.begin() != distances.end() && distance > (double)std::get<1>(*std::prev(distances.end()))))
                 {
                     distances.insert(std::make_tuple(i, distance));
                     if ((int)distances.size() > num_empty)

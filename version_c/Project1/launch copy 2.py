@@ -13,33 +13,33 @@ from subprocess import (
 )
 
 if __name__ == "__main__":
-    EXE_PATH = Path("./version_c") / "x64" / "Release" / "Project1.exe"
+    EXE_PATH = Path("./version_c") / "x64" / "Release" / "clustering_without_timeout.exe"
     NUM_POINTS = [
-        20,
-        30,
-        40,
-        50,
-        60,
-        70,
-        80,
-        90,
-        100,
-        200,
-        300,
-        400,
-        500,
-        600,
-        700,
-        800,
-        900,
+        # 20,
+        # 30,
+        # 40,
+        # 50,
+        # 60,
+        # 70,
+        # 80,
+        # 90,
+        # 100,
+        # 200,
+        # 300,
+        # 400,
+        # 500,
+        # 600,
+        # 700,
+        # 800,
+        # 900,
         1000,
     ]
     NUM_DIM = [2]
-    NUM_CLUST = [2, 4, 8, 16, 32, 64, 128, 256]
+    NUM_CLUST = [2, 4, 8, 16, 32, 64, 128]  # , 256]
     INIT_TYPE = [0, 1]
     # IMPR_CLASS = [0, 1 ,2]
-    IMPR_CLASS = [0, 1]
-    # IMPR_CLASS = [2]
+    # IMPR_CLASS = [0, 1]  # ,2]
+    IMPR_CLASS = [2]
     IT_ORDER = [0, 1, 2]
     results = []
     i = 0
@@ -53,42 +53,30 @@ if __name__ == "__main__":
     ):
         if pt <= clust:
             continue
-        if impr == 0 and it_order > 0:
+        if impr in [0, 2] and it_order > 0:
+            continue
+        if impr == 1 and it_order != 1:
             continue
         cont = True
         while cont:
-            try:
-                init_t = time.perf_counter()
-                args = f"{EXE_PATH.resolve()} {int(pt)} {int(dim)} {int(clust)} {int(it_order)} {int(impr)} {int(init)}"
-                result = (
-                    Popen(args, stdout=PIPE)
-                    .communicate()[0]#timeout=60 * 5
-                    .decode("utf-8")
-                )
-                end = time.perf_counter()
-                duration += end - init_t
-                cont = False
-            except TimeoutExpired:
-                print(
-                    "timeout ",
-                    pt,
-                    dim,
-                    clust,
-                    it_order,
-                    impr,
-                    init,
-                    "after ",
-                    time.perf_counter() - init_t,
-                )
-        if "Wrong" in result:
+            init_t = time.perf_counter()
+            args = f"{EXE_PATH.resolve()} {int(pt)} {int(dim)} {int(clust)} {int(it_order)} {int(impr)} {int(init)}"
+            result = (
+                Popen(args, stdout=PIPE)
+                .communicate()[0]  # timeout=60 * 5
+                .decode("utf-8")
+            )
+            end = time.perf_counter()
+            duration += end - init_t
+            cont = False
+        if "timeout" in result:
             continue
-        results.append(result)
+        results.extend(result.strip().split("\n"))
         print(f"{pt=} {clust=} {init=} {impr=} {it_order=} {(end-init_t)=}")
-        duration += end - init
         i += 1
 
     print(f"performed {i} tests in {duration} seconds")
-    p = Path("./results.csv")
+    p = Path("./results_fi_bi.csv")
     with open(p.resolve(), "w+") as f:
         header = ",".join([a.split(":")[0] for a in results[0].strip().split(",")])
         f.write(header + "\n")

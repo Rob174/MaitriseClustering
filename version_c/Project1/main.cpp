@@ -20,8 +20,8 @@
 #define UNINITIALIZED -1
 void run(int argc, char *argv[])
 {
-    int seed = 86165187;// GetTickCount64();
-    srand(seed);
+    int seed = GetTickCount64();
+    srand(204026156);
     auto params = get_config(argc, argv, seed);
     Config *config = std::get<0>(params);
     IterationOrder *order = std::get<1>(params);
@@ -32,11 +32,7 @@ void run(int argc, char *argv[])
     // Define initial clustering
     Clustering clustering;
     initialize(&clustering, config);
-    float cost = initial_cost(&clustering, config);
-    if (isinf(cost))
-    {
-        int b = 0;
-    }
+    double cost = initial_cost(&clustering, config);
     result->set_init_cost(cost);
     // Local seach
     bool improvement = true;
@@ -53,7 +49,7 @@ void run(int argc, char *argv[])
             int to_clust_id = order->next();
             while (to_clust_id != -1)
             {
-                float modif = cost_modif(
+                double modif = cost_modif(
                     &clustering,
                     from_cluster_id, to_clust_id,
                     &(clustering.p_c[point_moving_id * config->NUM_DIM]), config);
@@ -71,25 +67,27 @@ void run(int argc, char *argv[])
             order->end_loop();
         }
     outloop:
-        if (choice->i == UNINITIALIZED)
+        if (choice->i == UNINITIALIZED || choice->vij > -0.001)
             improvement = false;
         else
         {
             // Update cluster assignements
             update(&clustering, choice->l, choice->j, choice->i, config);
             cost += choice->vij;
+            /*
             if (cost < 0) {
                 std::cout << "Cost negative for seed" << config->SEED << std::endl;
                 exit(1);
             }
+            */
 
             result->set_next_iter();
         }
         double time_micro_elapsed = result->get_time_elapsed();
-        if (time_micro_elapsed > 1000000 * 60 * 5) {
+        /*if (time_micro_elapsed > 1000000 * 15) {
             std::cout << "Error timeout ";
             //break;
-        }
+        }*/
         delete choice;
     }
     result->set_final_cost(cost);

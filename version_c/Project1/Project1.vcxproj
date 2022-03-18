@@ -134,8 +134,8 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
-      <Optimization>Disabled</Optimization>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <Optimization>Full</Optimization>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -147,6 +147,7 @@
   <ItemGroup>
     <ClInclude Include="clustering.h" />
     <ClInclude Include="constants.h" />
+    <ClInclude Include="Fraction.h" />
     <ClInclude Include="kmeans.h" />
     <ClInclude Include="results.h" />
     <ClInclude Include="improvementChoice.h" />
@@ -156,6 +157,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="clustering.cpp" />
+    <ClCompile Include="Fraction.cpp" />
     <ClCompile Include="improvementChoice.cpp" />
     <ClCompile Include="iteration_order.cpp" />
     <ClCompile Include="kmeans.cpp" />
