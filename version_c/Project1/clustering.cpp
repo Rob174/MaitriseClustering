@@ -2,8 +2,41 @@
 
 #define GRID_COORD_MIN 0.
 #define GRID_COORD_MAX 100.
+std::tuple<int, char**> random_argv(int loop_id, long seed) {
+    int num_points = 1000;
+    const int clusters[] = { 2,4,8,16 };
+    int num_clust = clusters[loop_id / 4000];
+    int it_order = 0;
+    int impr_choice = loop_id % 2;
+    std::mt19937 gen(seed);
+    std::uniform_int_distribution<> distrib(0,1);
+    int init_choice = distrib(gen);
 
-std::tuple<Config*, IterationOrder*, ImprovementChoice*, Initializer* ,Result*> get_config(int argc, char** argv, int seed)
+    int argc = 7;
+    std::string
+        s_num_pt = std::to_string(num_points),
+        s_init = std::to_string(init_choice),
+        s_num_clust = std::to_string(num_clust),
+        s_it_order = std::to_string(it_order),
+        s_impr_choice = std::to_string(impr_choice);
+    std::vector<std::string> v;
+    v.push_back("prog_name");
+    v.push_back(s_num_pt.c_str());
+    v.push_back("2");
+    v.push_back(s_num_clust.c_str());
+    v.push_back(s_it_order.c_str());
+    v.push_back(s_impr_choice.c_str());
+    v.push_back(s_init.c_str());
+    char** argv = new char*[v.size()];
+    int index = 0;
+    for (auto& a : v) {
+        argv[index] = new char[a.length()+1];
+        strncpy_s(argv[index], a.length() + 1, a.c_str(), a.length() + 1);
+        index++;
+    }
+    return std::make_tuple(argc, argv);
+}
+std::tuple<Config*, IterationOrder*, ImprovementChoice*, Initializer* ,Result*> get_config(int argc, char** argv, long seed)
 {
     Config* config = new Config;
     if (argc != 7)
@@ -16,11 +49,30 @@ std::tuple<Config*, IterationOrder*, ImprovementChoice*, Initializer* ,Result*> 
         exit(1);
     }
     config->NUM_POINTS = atoi(argv[1]);
+    if (config->NUM_POINTS <= 1) {
+        exit(1);
+    }
     config->NUM_DIM = atoi(argv[2]);
+    if (config->NUM_DIM != 2) {
+        exit(1);
+    }
     config->NUM_CLUST = atoi(argv[3]);
+    if (config->NUM_CLUST == 0 || config->NUM_CLUST == 1 || config->NUM_CLUST >= config->NUM_POINTS) {
+        std::cout << "Wrong number of clusters related to num of points with " << config->NUM_POINTS << "points and " << config->NUM_CLUST << " clusters" << std::endl;
+        exit(1);
+    }
     config->IT_ORDER = atoi(argv[4]);
+    if (config->IT_ORDER > 2) {
+        exit(1);
+    }
     config->IMPR_CLASS = atoi(argv[5]);
+    if (config->IMPR_CLASS > 10) {
+        exit(1);
+    }
     config->INIT_CHOICE = atoi(argv[6]);
+    if (config->INIT_CHOICE > 10) {
+        exit(1);
+    }
     config->SEED = seed;
     IterationOrder* iteration_order = IterationOrderFactory::create(config, config->IT_ORDER);
     Result* result = new Result(config);
@@ -39,20 +91,23 @@ void clean(Config* config, Clustering*clust,IterationOrder* iteration_order, Res
     delete impr;
     delete initializer;
 }
-void initialize(Clustering* clustering, Config* config)
+void initialize(Clustering* clustering, Config* config, long seed)
 {
+    std::mt19937 gen(seed);
     // Initialize points coordinates
+    std::uniform_real_distribution<> dis(GRID_COORD_MIN, GRID_COORD_MAX);
     clustering->p_c = new double[config->NUM_POINTS * config->NUM_DIM];
     for (int i = 0; i < config->NUM_POINTS * config->NUM_DIM; i++)
-        clustering->p_c[i] = prandom(GRID_COORD_MIN, GRID_COORD_MAX);
+        clustering->p_c[i] = dis(gen);
     // Initialize number of points per cluster
     clustering->n_p_p_c = new int[config->NUM_CLUST];
     for (int i = 0; i < config->NUM_CLUST; i++)
         clustering->n_p_p_c[i] = 0;
     // Initialize cluster intial assignements
     clustering->c_a = new int[config->NUM_POINTS];
+    std::uniform_int_distribution<> distrib(0, config->NUM_CLUST - 1);
     for (int i = 0; i < config->NUM_POINTS; i++)
-        clustering->c_a[i] = (int)prandom(0, (int)config->NUM_CLUST-1);
+        clustering->c_a[i] = distrib(gen);
     // Initialize cluster centroids
     clustering->c_c = new double[config->NUM_CLUST * config->NUM_DIM];
     for (int i = 0; i < config->NUM_CLUST * config->NUM_DIM; i++)
@@ -71,7 +126,27 @@ void initialize(Clustering* clustering, Config* config)
     {
         for (int j = 0; j < config->NUM_DIM; j++)
         {
-            clustering->c_c[i * config->NUM_DIM + j] /= clustering->n_p_p_c[i];
+            clustering->c_c[i * config->NUM_DIM + j] = clustering->n_p_p_c[i] > 0 ? clustering->c_c[i * config->NUM_DIM + j]/clustering->n_p_p_c[i] : 0.;
         }
     }
+}
+Clustering* deepcopy(Clustering* clust,Config* config) {
+    Clustering* new_clustering = new Clustering();
+    // Initialize points coordinates
+    new_clustering->p_c = new double[config->NUM_POINTS * config->NUM_DIM];
+    for (int i = 0; i < config->NUM_POINTS * config->NUM_DIM; i++)
+        new_clustering->p_c[i] = clust->p_c[i];
+    // Initialize number of points per cluster
+    new_clustering->n_p_p_c = new int[config->NUM_CLUST];
+    for (int i = 0; i < config->NUM_CLUST; i++)
+        new_clustering->n_p_p_c[i] = clust->n_p_p_c[i];
+    // Initialize cluster intial assignements
+    new_clustering->c_a = new int[config->NUM_POINTS];
+    for (int i = 0; i < config->NUM_POINTS; i++)
+        new_clustering->c_a[i] = clust->c_a[i];
+    // Initialize cluster centroids
+    new_clustering->c_c = new double[config->NUM_CLUST * config->NUM_DIM];
+    for (int i = 0; i < config->NUM_CLUST * config->NUM_DIM; i++)
+        new_clustering->c_c[i] = clust->c_c[i];
+    return new_clustering;
 }

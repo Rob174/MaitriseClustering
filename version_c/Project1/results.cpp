@@ -31,6 +31,7 @@ void Result::set_time_start()
 	this->time_start = std::chrono::steady_clock::now();
 }
 void Result::print_results() {
+	std::cout << std::endl;
 	std::cout << "seed:" << this->config->SEED
 			  << ",num_clusters:" << this->config->NUM_CLUST
 		      << ",num_points:" << this->config->NUM_POINTS
@@ -43,4 +44,20 @@ void Result::print_results() {
 		      << ",num_iter_tot:" << this->num_iter_glob 
 		      << ",time:" << this->duration 
 		<< std::endl;
+	//printf("seed:%d,num_clusters:%d,num_points:%d,init_type:%d,ImprClass:%d,iteration_order:%d,init_cost:%.3f,end_cost:%.3f,num_iter:%d,num_iter_tot:%d,duration:%.3f\n", this->config->SEED, this->config->NUM_CLUST, this->config->NUM_POINTS, this->config->INIT_CHOICE, this->config->IMPR_CLASS, this->config->IT_ORDER, this->init_cost, this->final_cost, this->num_iter, this->num_iter_glob, this->duration);
+}
+std::vector<double>* Result::get_result() {
+	std::vector<double>* to_backup = new std::vector<double>();;
+	to_backup->push_back((double)this->config->SEED);
+	to_backup->push_back((double)this->config->NUM_CLUST);
+	to_backup->push_back((double)this->config->NUM_POINTS);
+	to_backup->push_back((double)this->config->INIT_CHOICE);
+	to_backup->push_back((double)this->config->IMPR_CLASS);
+	to_backup->push_back((double)this->config->IT_ORDER);
+	to_backup->push_back((double)this->init_cost);
+	to_backup->push_back((double)this->final_cost);
+	to_backup->push_back((double)this->num_iter);
+	to_backup->push_back((double)this->num_iter_glob);
+	to_backup->push_back((double)this->duration);
+	return to_backup;
 }
