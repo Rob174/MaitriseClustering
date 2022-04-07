@@ -62,7 +62,7 @@ if __name__ == "__main__":
     ds["tr"] = (
         ds["tr"]
         .map(lambda x, y: x)
-        .map(Sequential(preprocessing()), num_parallel_calls=tf.data.AUTOTUNE)
+        .map(lambda x:preprocessing(x), num_parallel_calls=tf.data.AUTOTUNE)
         .shuffle(5456)
         .batch(config["batch_size"])
         .map(lambda x: (x, x))
@@ -71,7 +71,7 @@ if __name__ == "__main__":
     ds["val"] = (
         ds["val"]
         .map(lambda x, y: x)
-        .map(Sequential(preprocessing()), num_parallel_calls=tf.data.AUTOTUNE)
+        .map(lambda x:preprocessing(x), num_parallel_calls=tf.data.AUTOTUNE)
         .shuffle(1364)
         .batch(config["batch_size"])
         .map(lambda x: (x, x))
