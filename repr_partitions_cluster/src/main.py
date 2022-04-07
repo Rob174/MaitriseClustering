@@ -2,7 +2,7 @@ from pickletools import optimize
 from xml.etree.ElementInclude import include
 import tensorflow as tf
 from tensorflow.keras import mixed_precision, Sequential
-from tensorflow.keras.layers import Lambda, Softmax
+from tensorflow.keras.layers import Lambda, Softmax,Conv2D
 from tensorflow.keras.applications import ResNet50
 from repr_partitions_cluster.src.HDF5Generator import HDF5Generator
 from pathlib import Path
@@ -35,7 +35,7 @@ if __name__ == "__main__":
                 str(
                     root
                     / "data"
-                    / f"dataset_ia_2_clusters_grid_{config['grid_size']}px.hdf5"
+                    / f"dataset_ia_2_clusters_grid_{config['grid_size']}px_{dataset}.hdf5"
                 )
             ]
         ).interleave(
@@ -49,36 +49,33 @@ if __name__ == "__main__":
             ),
             num_parallel_calls=tf.data.AUTOTUNE,
         )
-        for dataset, size in zip(["tr", "val"], [13, 4])
+        for dataset in ["tr", "val"]
     }
     preprocessing = Sequential(
         [
             Lambda(
                 lambda x: x / 5.0,
-                input_shape=(config["grid_size"], config["grid_size"], 2),
+                # input_shape=(config["grid_size"], config["grid_size"], 2),
             )
         ]
     )
     ds["tr"] = (
         ds["tr"]
-        .map(lambda x, y: x)
-        .map(lambda x:preprocessing(x), num_parallel_calls=tf.data.AUTOTUNE)
+        .map(lambda x, y: (preprocessing(x), y), num_parallel_calls=tf.data.AUTOTUNE)
         .shuffle(5456)
         .batch(config["batch_size"])
-        .map(lambda x: (x, x))
         .prefetch(tf.data.experimental.AUTOTUNE)
     )
     ds["val"] = (
         ds["val"]
-        .map(lambda x, y: x)
-        .map(lambda x:preprocessing(x), num_parallel_calls=tf.data.AUTOTUNE)
+        .map(lambda x, y: (preprocessing(x), y), num_parallel_calls=tf.data.AUTOTUNE)
         .shuffle(1364)
         .batch(config["batch_size"])
-        .map(lambda x: (x, x))
         .prefetch(tf.data.experimental.AUTOTUNE)
     )
     model = Sequential(
         [
+            Conv2D(3, (1,1), padding="same", input_shape=(config["grid_size"], config["grid_size"], 2)),
             ResNet50(
                 input_shape=(config["grid_size"], config["grid_size"], 2),
                 include_top=False,
