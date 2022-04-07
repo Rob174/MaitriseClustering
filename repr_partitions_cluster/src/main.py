@@ -2,7 +2,7 @@ from pickletools import optimize
 from xml.etree.ElementInclude import include
 import tensorflow as tf
 from tensorflow.keras import mixed_precision, Sequential
-from tensorflow.keras.layers import Lambda, Softmax,Conv2D
+from tensorflow.keras.layers import Lambda, Softmax, Conv2D, GlobalAveragePooling2D
 from tensorflow.keras.applications import ResNet50
 from repr_partitions_cluster.src.HDF5Generator import HDF5Generator
 from pathlib import Path
@@ -35,6 +35,7 @@ if __name__ == "__main__":
                 str(
                     root
                     / "data"
+                    / "image_dataset"
                     / f"dataset_ia_2_clusters_grid_{config['grid_size']}px_{dataset}.hdf5"
                 )
             ]
@@ -75,12 +76,19 @@ if __name__ == "__main__":
     )
     model = Sequential(
         [
-            Conv2D(3, (1,1), padding="same", input_shape=(config["grid_size"], config["grid_size"], 2)),
-            ResNet50(
+            Conv2D(
+                3,
+                (1, 1),
+                padding="same",
                 input_shape=(config["grid_size"], config["grid_size"], 2),
-                include_top=False,
-                classes=2,
             ),
+            ResNet50(
+                input_shape=(config["grid_size"], config["grid_size"], 3),
+                include_top=False,
+                pooling=None,
+            ),
+            Conv2D(2, (1, 1), padding="same"),
+            GlobalAveragePooling2D(),
             Softmax(),
         ]
     )
@@ -100,13 +108,14 @@ if __name__ == "__main__":
     callbacks = [
         tf.keras.callbacks.EarlyStopping(
             monitor="val_accuracy_fn",
-            min_delta=config["min_delta"][1],
-            patience=config["patience"][1],
+            min_delta=config["min_delta"],
+            patience=config["patience"],
             restore_best_weights=True,
             verbose=1,
         ),
         WandbCallback(),
     ]
+    print(model.summary())
     model.fit(
         ds["tr"],
         epochs=config["num_epochs"],
