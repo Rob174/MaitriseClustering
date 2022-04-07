@@ -2,7 +2,7 @@ from pickletools import optimize
 from xml.etree.ElementInclude import include
 import tensorflow as tf
 from tensorflow.keras import mixed_precision, Sequential
-from tensorflow.keras.layers import Normalization, Softmax
+from tensorflow.keras.layers import Lambda, Softmax
 from tensorflow.keras.applications import ResNet50
 from repr_partitions_cluster.src.HDF5Generator import HDF5Generator
 from pathlib import Path
@@ -51,7 +51,7 @@ if __name__ == "__main__":
         )
         for dataset, size in zip(["tr", "val"], [13, 4])
     }
-    preprocessing = Sequential([Normalization()])
+    preprocessing = Sequential([Lambda(lambda x: x / 5.0)])
     ds["tr"] = (
         ds["tr"]
         .map(lambda x, y: x)
