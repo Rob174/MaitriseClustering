@@ -3,6 +3,7 @@ from h5py import File
 import numpy as np
 import matplotlib.pyplot as plt
 import json
+from sklearn.model_selection import train_test_split
 
 
 def points_to_images(
@@ -10,6 +11,9 @@ def points_to_images(
     dst_name: str,
     src_grid_max: float = 100.0,
     num_px: int = 100,
+    tr_size: float = 0.7,
+    val_size: float = 0.2,
+    tst_size: float = 0.1,
 ):
 
     num_clusters = 2
@@ -48,33 +52,50 @@ def points_to_images(
     y_grid = np.linspace(0, src_grid_max, num_px + 1)
     with open(Path(".") / "data" / "dico_best.json", "r") as f:
         dico_best = json.load(f)
-    with File(path.parent / (dst_name + f"_grid_{num_px}px.hdf5"), "w") as f:
-        f.create_group("input")
-        f.create_group("output")
-        dico_best = dico_best["final_cost"][str(num_clusters)]
-        for k, best in dico_best.items():
-            assignements = dico["init_assignements"][k]
-            Lhist = []
-            for channel in range(num_clusters):
-                points = dico["points_coords"][k][assignements == channel, :]
-                image, _, _ = np.histogram2d(
-                    points[:, 0],
-                    points[:, 1],
-                    bins=(x_grid, y_grid),
-                )
-                Lhist.append(image)
-            image = np.stack(Lhist, axis=-1)
-            label = np.zeros((3,), dtype=np.float32)
-            corresp = {
-                "BI": 0,
-                "FI": 1,
-            }
-            if best == "Equal":
-                label = np.ones(label.shape, dtype=np.float32) * 1 / label.shape[-1]
-            else:
-                label[corresp[best]] = 1.0
-            f["input"].create_dataset(k, data=image, dtype=np.float32)
-            f["output"].create_dataset(k, data=label, dtype=np.float32)
+    dico_best = dico_best["final_cost"][str(num_clusters)]
+    keys = list(dico_best.keys())
+    tr_keys, tst_val_keys = train_test_split(
+        keys, test_size=tst_size + val_size, random_state=0, shuffle=False
+    )
+    val_keys, tst_keys = train_test_split(
+        tst_val_keys,
+        test_size=tst_size / (tst_size + val_size),
+        random_state=0,
+        shuffle=False,
+    )
+    for keys, name in zip([tr_keys, val_keys, tst_keys], ["tr", "val", "tst"]):
+        with File(
+            path.parent
+            / "image_dataset"
+            / (dst_name + f"_grid_{num_px}px_{name}.hdf5"),
+            "w",
+        ) as f:
+            f.create_group("input")
+            f.create_group("output")
+            for k in keys:
+                best = dico_best[k]
+                assignements = dico["init_assignements"][k]
+                Lhist = []
+                for channel in range(num_clusters):
+                    points = dico["points_coords"][k][assignements == channel, :]
+                    image, _, _ = np.histogram2d(
+                        points[:, 0],
+                        points[:, 1],
+                        bins=(x_grid, y_grid),
+                    )
+                    Lhist.append(image)
+                image = np.stack(Lhist, axis=-1)
+                label = np.zeros((2,), dtype=np.float32)
+                corresp = {
+                    "BI": 0,
+                    "FI": 1,
+                }
+                if best == "Equal":
+                    label = np.ones(label.shape, dtype=np.float32) * 1 / label.shape[-1]
+                else:
+                    label[corresp[best]] = 1.0
+                f["input"].create_dataset(k, data=image, dtype=np.float32)
+                f["output"].create_dataset(k, data=label, dtype=np.float32)
 
 
 if __name__ == "__main__":
