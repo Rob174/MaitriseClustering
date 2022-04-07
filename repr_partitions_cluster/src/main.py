@@ -42,8 +42,8 @@ if __name__ == "__main__":
             lambda filename: tf.data.Dataset.from_generator(
                 HDF5Generator(),
                 output_signature=(
-                    tf.TensorSpec(shape=(256, 256, 3), dtype=tf.float32),  # type: ignore
-                    tf.TensorSpec(shape=(), dtype=tf.float32),  # type: ignore
+                    tf.TensorSpec(shape=(config["grid_size"], config["grid_size"], 2), dtype=tf.float32),  # type: ignore
+                    tf.TensorSpec(shape=(2,), dtype=tf.float32),  # type: ignore
                 ),
                 args=(filename,),
             ),
@@ -51,7 +51,14 @@ if __name__ == "__main__":
         )
         for dataset, size in zip(["tr", "val"], [13, 4])
     }
-    preprocessing = Sequential([Lambda(lambda x: x / 5.0)])
+    preprocessing = Sequential(
+        [
+            Lambda(
+                lambda x: x / 5.0,
+                input_shape=(config["grid_size"], config["grid_size"], 2),
+            )
+        ]
+    )
     ds["tr"] = (
         ds["tr"]
         .map(lambda x, y: x)
