@@ -13,7 +13,6 @@ def points_to_images(
     num_px: int = 100,
     tr_size: float = 0.7,
     val_size: float = 0.2,
-    tst_size: float = 0.1,
 ):
 
     num_clusters = 2
@@ -54,16 +53,16 @@ def points_to_images(
         dico_best = json.load(f)
     dico_best = dico_best["final_cost"][str(num_clusters)]
     keys = list(dico_best.keys())
-    tr_keys, tst_val_keys = train_test_split(
-        keys, test_size=tst_size + val_size, random_state=0, shuffle=False
+    tr_keys, val_keys = train_test_split(
+        keys, test_size=val_size, random_state=0, shuffle=False
     )
-    val_keys, tst_keys = train_test_split(
-        tst_val_keys,
-        test_size=tst_size / (tst_size + val_size),
-        random_state=0,
-        shuffle=False,
-    )
-    for keys, name in zip([tr_keys, val_keys, tst_keys], ["tr", "val", "tst"]):
+    # val_keys, tst_keys = train_test_split(
+    #     tst_val_keys,
+    #     test_size=tst_size / (tst_size + val_size),
+    #     random_state=0,
+    #     shuffle=False,
+    # )
+    for keys, name in zip([tr_keys, val_keys], ["tr", "val"]):
         with File(
             path.parent
             / "image_dataset"
@@ -99,7 +98,7 @@ def points_to_images(
 
 
 if __name__ == "__main__":
-    points_to_images(Path("data/dataset.hdf5"), "dataset_ia_2_clusters", num_px=512)
+    # points_to_images(Path("data/dataset.hdf5"), "dataset_ia_2_clusters", num_px=512)
     points_to_images(Path("data/dataset.hdf5"), "dataset_ia_2_clusters", num_px=256)
     points_to_images(Path("data/dataset.hdf5"), "dataset_ia_2_clusters", num_px=128)
     points_to_images(Path("data/dataset.hdf5"), "dataset_ia_2_clusters", num_px=64)

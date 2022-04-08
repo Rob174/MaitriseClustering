@@ -13,14 +13,15 @@ if __name__ == "__main__":
     config = {
         "batch_size": 32,
         "num_epochs": 100,
-        "lr": 1e-3,
+        "lr": 1e-5,
         "betas": (0.9, 0.99),
         "optimizer": "adam",
         "min_delta": 1e-3,
         "patience": 10,
-        "network": "densenet121",
+        "network": "resnet50",
         "grid_size": 128,
-        "last_layers":"flatten_dense"
+        "last_layers":"flatten_dense",
+        "num_samples": 20000,
     }
     wandb.init(
         config=config,
@@ -78,7 +79,7 @@ if __name__ == "__main__":
                 padding="same",
                 input_shape=(config["grid_size"], config["grid_size"], 2),
             ),
-            DenseNet121(
+            ResNet50(
                 input_shape=(config["grid_size"], config["grid_size"], 3),
                 include_top=False,
                 pooling=None,
