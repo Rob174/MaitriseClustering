@@ -6,13 +6,13 @@ from repr_partitions_cluster.src.HDF5Generator import HDF5Generator
 from pathlib import Path
 import wandb
 from wandb.keras import WandbCallback
-from repr_partitions_cluster.src.callbacks import ConfusionMatrix
+from repr_partitions_cluster.src.callbacks import ConfusionMatrix,Predictions
 
 if __name__ == "__main__":
     root = Path(".")
     config = {
         "batch_size": 32,
-        "num_epochs": 1,
+        "num_epochs": 100,
         "lr": 1e-3,
         "betas": (0.9, 0.99),
         "optimizer": "adam",
@@ -30,20 +30,18 @@ if __name__ == "__main__":
         save_code=True,
         entity="romo-1245"
     )
+    path_caches = [root / "data" / "image_dataset" / f"dataset_ia_2_clusters_grid_{config['grid_size']}px_{dataset}.hdf5" for dataset in ["tr", "val"]]
     ds = {
         dataset: tf.data.Dataset.from_generator(
             HDF5Generator(
-                    root
-                    / "data"
-                    / "image_dataset"
-                    / f"dataset_ia_2_clusters_grid_{config['grid_size']}px_{dataset}.hdf5"
+                    path
                 ),
             output_signature=(
                 tf.TensorSpec(shape=(config["grid_size"], config["grid_size"], 2), dtype=tf.float32),  # type: ignore
                 tf.TensorSpec(shape=(2,), dtype=tf.float32),  # type: ignore
             ),
         )
-        for dataset in ["tr", "val"]
+        for dataset,path in zip(["tr", "val"],path_caches)
     }
     preprocessing = Sequential(
         [
@@ -115,6 +113,12 @@ if __name__ == "__main__":
         ),
         WandbCallback(validation_data=ds["val"],predictions=3,save_model=False),
         ConfusionMatrix(validation_data=ds["val"],classes_names=("BI","FI")),
+        Predictions(
+            validation_path=path_caches[1],
+            path_metadata=path_caches[1].parent.parent / "dataset.hdf5",
+            classes_names=("BI","FI"),
+            num_pred=5
+            ),
     ]
     print(tf.config.list_physical_devices("GPU"))
     model.fit(

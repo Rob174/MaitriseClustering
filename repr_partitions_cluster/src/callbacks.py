@@ -1,5 +1,6 @@
 import numpy as np
 from pathlib import Path
+from h5py import File
 from bs4 import BeautifulSoup
 import wandb
 import tensorflow as tf
@@ -74,8 +75,57 @@ class ConfusionMatrix(tf.keras.callbacks.Callback):
         wandb.log({"confusion_matrix":html})
         return confusion_matrix
 
-# if __name__ == "__main__":
-#     conf = ConfusionMatrix(("0","1"))
-#     y_true = np.random.rand(150,2)
-#     y_pred = np.random.rand(150,2)
-#     conf.make_confusion_matrix(y_true, y_pred)
+class Predictions(tf.keras.callbacks.Callback):
+    def __init__(self,classes_names:tuple,validation_path:Path,path_metadata: Path,num_pred:int=5) -> None:
+        self.classes_names = classes_names
+        self.num_pred = num_pred
+        self.metadata = {}
+        with File(str(path_metadata.resolve()), "r") as cache:
+            for k,v in cache["metadata"].items():
+                arr = np.copy(v)
+                self.metadata[k] = {
+                "SEED": arr[0],
+                "NUM_CLUST": arr[1],
+                "NUM_POINTS": arr[2],
+                "INIT_CHOICE": "random" if arr[3] == 0 else "kmeans+",
+                "IMPR_CLASS": "BI" if arr[4] == 0 else "FI",
+                "IT_ORDER": "BACK" if arr[5] == 0 else "other",
+                "init_cost": arr[6],
+                "final_cost": arr[7],
+                "num_iter": arr[8],
+                "num_iter_glob": arr[9],
+                "duration": arr[10],
+            }
+        self.validation_path = validation_path
+    def on_train_end(self,*args,**kwargs):
+        tot_length = 0
+        with File(str(self.validation_path.resolve()), "r") as cache:
+            keys = list(cache["input"].keys())[:self.num_pred]
+            buffer = {}
+            for k in keys:
+                buffer[k] = {
+                    "input": np.copy(cache["input"][k]),
+                    "output": np.copy(cache["output"][k]),
+                    "metadata": self.metadata[k]
+                }
+        inputs = np.stack([buffer[k]["input"] for k in keys],axis=0)
+        y_pred = self.model.predict(inputs)
+        y_true = []
+        for k in keys:
+            arr = np.zeros((len(self.classes_names),))
+            arr[int(buffer[k]["output"][0])] = 1
+            y_true.append(arr)
+        y_true = np.stack(y_true ,axis=0)
+        metadata = [buffer[k]["metadata"]["INIT_CHOICE"] for k in keys]
+        keys = list(buffer.keys())
+        data = []
+        for i,(k,inp,out,pred,metad) in enumerate(zip(keys,inputs,y_true,y_pred,metadata)):
+            inp = np.stack([inp[:,:,0],inp[:,:,1],np.zeros(inp[:,:,0].shape)],axis=-1)
+            inp = (inp / np.max(inp) * 255).astype(np.uint8)
+            img = wandb.Image(inp)
+            true = str(self.classes_names[np.argmax(out)]+":"+str(out.round(decimals=2)))
+            pred = str(self.classes_names[np.argmax(pred)]+":"+str(pred.round(decimals=2)))
+            data.append([k,img,pred,true,metad])
+        table = wandb.Table(columns=['id_dataset','Clustering initial', 'Valeur réellen','Prédiction','INIT_CHOICE'], data=data)
+        wandb.log({"predictions":table})
+    
