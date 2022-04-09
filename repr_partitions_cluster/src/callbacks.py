@@ -9,9 +9,10 @@ from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 
 class ConfusionMatrix(tf.keras.callbacks.Callback):
-    def __init__(self,classes_names:tuple,validation_data) -> None:
+    def __init__(self,classes_names:tuple,validation_data,name:str) -> None:
         self.classes_names = classes_names
         self.validation_data = validation_data
+        self.name = name
     def on_train_end(self,*args,**kwargs):
         y_true = []
         y_pred = []
@@ -72,7 +73,7 @@ class ConfusionMatrix(tf.keras.callbacks.Callback):
         driver.quit()
         # Save to wandb
         html = wandb.Html(html)
-        wandb.log({"confusion_matrix":html})
+        wandb.log({self.name+"_confusion_matrix":html})
         return confusion_matrix
 
 class Predictions(tf.keras.callbacks.Callback):
