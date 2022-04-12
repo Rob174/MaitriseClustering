@@ -99,6 +99,6 @@ def points_to_images(
 
 if __name__ == "__main__":
     # points_to_images(Path("data/dataset.hdf5"), "dataset_ia_2_clusters", num_px=512)
-    points_to_images(Path("data/dataset.hdf5"), "dataset_ia_2_clusters", num_px=256)
-    points_to_images(Path("data/dataset.hdf5"), "dataset_ia_2_clusters", num_px=128)
-    points_to_images(Path("data/dataset.hdf5"), "dataset_ia_2_clusters", num_px=64)
+    points_to_images(Path("data/dataset_250pts_40ksamples.hdf5"), "dataset_ia_2_clusters_250pts", num_px=256)
+    points_to_images(Path("data/dataset_250pts_40ksamples.hdf5"), "dataset_ia_2_clusters_250pts", num_px=128)
+    points_to_images(Path("data/dataset_250pts_40ksamples.hdf5"), "dataset_ia_2_clusters_250pts", num_px=64)
