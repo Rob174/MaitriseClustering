@@ -17,7 +17,7 @@
 #include <windows.h>
 #include <limits>
 #include <random>
-void run(int argc, char* argv[], int loop_id, bool verbose, long seed);
+void run(int argc, char* argv[], int loop_id, bool verbose, long seed_points, long seed_assigns);
 #endif // !ALGORITHM_H
 
 

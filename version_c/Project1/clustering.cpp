@@ -2,15 +2,13 @@
 
 #define GRID_COORD_MIN 0.
 #define GRID_COORD_MAX 100.
-std::tuple<int, char**> random_argv(int loop_id, long seed) {
+std::tuple<int, char**> random_argv(int loop_id, int init) {
     int num_points = 1000;
     const int clusters[] = { 2,4,8,16 };
-    int num_clust = clusters[loop_id / 4000];
+    int num_clust = clusters[0];
     int it_order = 0;
     int impr_choice = loop_id % 2;
-    std::mt19937 gen(seed);
-    std::uniform_int_distribution<> distrib(0,1);
-    int init_choice = distrib(gen);
+    int init_choice = init;
 
     int argc = 7;
     std::string
@@ -36,7 +34,7 @@ std::tuple<int, char**> random_argv(int loop_id, long seed) {
     }
     return std::make_tuple(argc, argv);
 }
-std::tuple<Config*, IterationOrder*, ImprovementChoice*, Initializer* ,Result*> get_config(int argc, char** argv, long seed)
+std::tuple<Config*, IterationOrder*, ImprovementChoice*, Initializer* ,Result*> get_config(int argc, char** argv, long seed_points,long seed_assign)
 {
     Config* config = new Config;
     if (argc != 7)
@@ -73,41 +71,49 @@ std::tuple<Config*, IterationOrder*, ImprovementChoice*, Initializer* ,Result*> 
     if (config->INIT_CHOICE > 10) {
         exit(1);
     }
-    config->SEED = seed;
+    config->SEED_POINTS = seed_points;
+    config->SEED_ASSIGN = seed_assign;
     IterationOrder* iteration_order = IterationOrderFactory::create(config, config->IT_ORDER);
     Result* result = new Result(config);
     ImprovementChoice* impr = ImprFactory::create(config->IMPR_CLASS, result, config);
     Initializer* initializer = InitializerFactory::create(config->INIT_CHOICE);
     return std::make_tuple(config, iteration_order,impr, initializer,result);
 }
-void clean(Config* config, Clustering*clust,IterationOrder* iteration_order, Result* result, ImprovementChoice* impr, Initializer* initializer) {
+void clean(Config* config, Clustering*clust, Clustering* initial_clustering, IterationOrder* iteration_order, Result* result, ImprovementChoice* impr, Initializer* initializer) {
     delete clust->p_c;
     delete clust->n_p_p_c;
     delete clust->c_a;
     delete clust->c_c;
+    delete initial_clustering->p_c;
+    delete initial_clustering->n_p_p_c;
+    delete initial_clustering->c_a;
+    delete initial_clustering->c_c;
+    delete clust;
+    delete initial_clustering;
     delete config;
     delete iteration_order;
     delete result;
     delete impr;
     delete initializer;
 }
-void initialize(Clustering* clustering, Config* config, long seed)
+void initialize(Clustering* clustering, Config* config)
 {
-    std::mt19937 gen(seed);
+    std::mt19937 gen_points(config->SEED_POINTS);
     // Initialize points coordinates
     std::uniform_real_distribution<> dis(GRID_COORD_MIN, GRID_COORD_MAX);
     clustering->p_c = new double[config->NUM_POINTS * config->NUM_DIM];
     for (int i = 0; i < config->NUM_POINTS * config->NUM_DIM; i++)
-        clustering->p_c[i] = dis(gen);
+        clustering->p_c[i] = dis(gen_points);
     // Initialize number of points per cluster
     clustering->n_p_p_c = new int[config->NUM_CLUST];
     for (int i = 0; i < config->NUM_CLUST; i++)
         clustering->n_p_p_c[i] = 0;
     // Initialize cluster intial assignements
     clustering->c_a = new int[config->NUM_POINTS];
+    std::mt19937 gen_assign(config->SEED_ASSIGN);
     std::uniform_int_distribution<> distrib(0, config->NUM_CLUST - 1);
     for (int i = 0; i < config->NUM_POINTS; i++)
-        clustering->c_a[i] = distrib(gen);
+        clustering->c_a[i] = distrib(gen_assign);
     // Initialize cluster centroids
     clustering->c_c = new double[config->NUM_CLUST * config->NUM_DIM];
     for (int i = 0; i < config->NUM_CLUST * config->NUM_DIM; i++)

@@ -14,7 +14,7 @@ def points_to_images(
     tr_size: float = 0.7,
     val_size: float = 0.2,
 ):
-
+    dico_name = ""
     num_clusters = 2
     dico = {
         "init_assignements": {},
@@ -29,27 +29,45 @@ def points_to_images(
             dico["points_coords"][k] = np.copy(v).reshape(-1, 2)
         for k, v in f["metadata"].items():
             arr = np.copy(v)
-            dico["metadata"][k] = {
-                "SEED": arr[0],
-                "NUM_CLUST": arr[1],
-                "NUM_POINTS": arr[2],
-                "INIT_CHOICE": "random" if arr[3] == 0 else "kmeans+",
-                "IMPR_CLASS": "BI" if arr[4] == 0 else "FI",
-                "IT_ORDER": "BACK" if arr[5] == 0 else "other",
-                "init_cost": arr[6],
-                "final_cost": arr[7],
-                "num_iter": arr[8],
-                "num_iter_glob": arr[9],
-                "duration": arr[10],
-            }
-            num_clust = int(arr[1])
-            if arr[1] not in dico["clusters_keys"]:
+            if arr.shape[0] == 11:
+                dico["metadata"][k] = {
+                    "SEED": arr[0],
+                    "NUM_CLUST": arr[1],
+                    "NUM_POINTS": arr[2],
+                    "INIT_CHOICE": "random" if arr[3] == 0 else "kmeans+",
+                    "IMPR_CLASS": "BI" if arr[4] == 0 else "FI",
+                    "IT_ORDER": "BACK" if arr[5] == 0 else "other",
+                    "init_cost": arr[6],
+                    "final_cost": arr[7],
+                    "num_iter": arr[8],
+                    "num_iter_glob": arr[9],
+                    "duration": arr[10],
+                }
+                dico_name = "dico_best.json"
+            elif arr.shape[0] == 12:
+                dico["metadata"][k] = {
+                    "SEED_POINTS": arr[0],
+                    "SEED_ASSIGNS": arr[1],
+                    "NUM_CLUST": arr[2],
+                    "NUM_POINTS": arr[3],
+                    "INIT_CHOICE": "random" if arr[4] == 0 else "kmeans+",
+                    "IMPR_CLASS": "BI" if arr[5] == 0 else "FI",
+                    "IT_ORDER": "BACK" if arr[6] == 0 else "other",
+                    "init_cost": arr[7],
+                    "final_cost": arr[8],
+                    "num_iter": arr[9],
+                    "num_iter_glob": arr[10],
+                    "duration": arr[11],
+                }
+                dico_name = "dico_best_diversified.json"
+            num_clust = int(dico["metadata"][k]["NUM_CLUST"])
+            if dico["metadata"][k]["NUM_CLUST"] not in dico["clusters_keys"]:
                 dico["clusters_keys"][num_clust] = []
             dico["clusters_keys"][num_clust].append(k)
 
     x_grid = np.linspace(0, src_grid_max, num_px + 1)
     y_grid = np.linspace(0, src_grid_max, num_px + 1)
-    with open(Path(".") / "data" / "dico_best.json", "r") as f:
+    with open(Path(".") / "data" / dico_name, "r") as f:
         dico_best = json.load(f)
     dico_best = dico_best["final_cost"][str(num_clusters)]
     keys = list(dico_best.keys())
@@ -99,6 +117,6 @@ def points_to_images(
 
 if __name__ == "__main__":
     # points_to_images(Path("data/dataset.hdf5"), "dataset_ia_2_clusters", num_px=512)
-    points_to_images(Path("data/dataset_250pts_40ksamples.hdf5"), "dataset_ia_2_clusters_250pts", num_px=256)
-    points_to_images(Path("data/dataset_250pts_40ksamples.hdf5"), "dataset_ia_2_clusters_250pts", num_px=128)
-    points_to_images(Path("data/dataset_250pts_40ksamples.hdf5"), "dataset_ia_2_clusters_250pts", num_px=64)
+    points_to_images(Path("data/dataset_1000pts_40ksamples_diversified.hdf5"), "dataset_ia_2_clusters_1000pts_diversified", num_px=256)
+    points_to_images(Path("data/dataset_1000pts_40ksamples_diversified.hdf5"), "dataset_ia_2_clusters_1000pts_diversified", num_px=128)
+    points_to_images(Path("data/dataset_1000pts_40ksamples_diversified.hdf5"), "dataset_ia_2_clusters_1000pts_diversified", num_px=64)

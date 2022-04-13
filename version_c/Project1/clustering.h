@@ -17,9 +17,9 @@
 #include <random>
 class ImprovementChoice;
 class Initializer;
-std::tuple<Config*, IterationOrder*, ImprovementChoice*, Initializer*, Result*> get_config(int argc, char** argv,long seed);
-void clean(Config* config, Clustering* clust, IterationOrder* iteration_order, Result* result, ImprovementChoice* impr, Initializer* initializer);
-void initialize(Clustering* clustering, Config* config, long seed);
+std::tuple<Config*, IterationOrder*, ImprovementChoice*, Initializer*, Result*> get_config(int argc, char** argv, long seed_points, long seed_assign);
+void clean(Config* config, Clustering* clust, Clustering* initial_clustering, IterationOrder* iteration_order, Result* result, ImprovementChoice* impr, Initializer* initializer);
+void initialize(Clustering* clustering, Config* config);
 Clustering* deepcopy(Clustering* clust, Config* config);
-std::tuple<int, char**> random_argv(int loop_id, long seed);
+std::tuple<int, char**> random_argv(int loop_id, int init);
 #endif

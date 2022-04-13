@@ -13,7 +13,7 @@ void create_dataset(Result*res, Clustering*init_clust, Clustering* final_clust) 
         }
         std::string identifier;
         std::ostringstream os;
-        os << res->get_config()->SEED << "," << res->get_config()->IMPR_CLASS << "," << res->get_config()->NUM_CLUST << "," << res->get_config()->INIT_CHOICE << "," << res->get_config()->IT_ORDER;
+        os << res->get_config()->SEED_POINTS << "," << res->get_config()->SEED_ASSIGN << "," << res->get_config()->IMPR_CLASS << "," << res->get_config()->NUM_CLUST << "," << res->get_config()->INIT_CHOICE << "," << res->get_config()->IT_ORDER;
         identifier = os.str();
 
         H5File file(FILE_NAME, H5F_ACC_RDWR);
@@ -21,9 +21,8 @@ void create_dataset(Result*res, Clustering*init_clust, Clustering* final_clust) 
         Group group1(file.openGroup("metadata"));
         const int RANK1 = 1;
         hsize_t dims1[RANK1];
-        dims1[0] = 11;
+        dims1[0] = 12;
         DataSpace dataspace1(RANK1, dims1);
-
         DataSet dataset1 = group1.createDataSet(identifier, PredType::NATIVE_DOUBLE, dataspace1);
         std::vector<double> *results = res->get_result();
         double *data = new double[results->size()];
@@ -31,6 +30,7 @@ void create_dataset(Result*res, Clustering*init_clust, Clustering* final_clust) 
             data[i] = (*results)[i];
         }
         dataset1.write(data, PredType::NATIVE_DOUBLE);
+        delete results;
 
         // Save points coordinates
         Group group2(file.openGroup("points_coords"));
@@ -61,6 +61,7 @@ void create_dataset(Result*res, Clustering*init_clust, Clustering* final_clust) 
 
         DataSet dataset4 = group4.createDataSet(identifier, PredType::NATIVE_INT, dataspace4);
         dataset4.write(final_clust->c_a, PredType::NATIVE_INT);
+        delete data;
     } 
     catch (FileIException error) {
         error.printErrorStack();

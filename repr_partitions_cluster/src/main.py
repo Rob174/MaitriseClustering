@@ -23,8 +23,7 @@ from repr_partitions_cluster.src.callbacks import ConfusionMatrix, Predictions
 
 if __name__ == "__main__":
     root = Path(".") / "data"
-    for num_points in [1000, 250]:
-        for model_name in ["vision_transformer"]:
+    for model_name in ["resnet50"]:
             tf.keras.utils.set_random_seed(1)
             tf.random.set_seed(1)
             # tf.config.experimental.enable_op_determinism()
@@ -43,23 +42,23 @@ if __name__ == "__main__":
                 "dropout": 0.2,  # [0.,0.1,0.2,0.5]
                 "denses": [20, 10, 5, 2],  # [[2],[20,2],[20,10,2],[20,10,5,2]],
                 "transfer": False,
-                "num_pts": num_points,
+                "num_pts": 1000,
                 
                 
                 "patch_size": 8,
                 "projection_dim": 64,
-                "num_heads": 4,
+                "num_heads": 8,
                 "transformer_units": [128, 64],
                 "transformer_layers": 8,
-                "mlp_head_units":[2048, 1024]
-                
+                "mlp_head_units":[2048, 1024],
+                "dataset": "diversified_examples"
             }
             wandb.init(
                 config=config,
                 project="Recherche Maitrise",  # Title of your project
                 group="Top view image",  # In what group of runs do you want this run to be in?
-                name=f"{config['network']} - Base model - {config['num_pts']} points",
-                tags=["top_view_image", "base_model"],
+                name=f"{config['network']} - head test {config['num_heads']}",
+                tags=["top_view_image", "learning_rate"],
                 save_code=True,
                 entity="romo-1245",
             )
@@ -114,16 +113,16 @@ if __name__ == "__main__":
                     .prefetch(tf.data.experimental.AUTOTUNE)
                 )
             end_model_layers = None
-            if config["last_layers"] == "vision_transformer":
+            if config["network"] == "vision_transformer":
                 end_model_layers = []
-            elif config["last_layers"] == "flatten_dense":
+            elif config["last_layers"] == "flatten_dense" and config["network"] != "vision_transformer":
                 end_model_layers = [Flatten(), Dense(2)]
-            elif config["last_layers"] == "glob_avg":
+            elif config["last_layers"] == "glob_avg" and config["network"] != "vision_transformer":
                 end_model_layers = [
                     Conv2D(2, (1, 1), padding="same"),
                     GlobalAveragePooling2D(),
                 ]
-            elif config["last_layers"] == "flatten_dense_drop":
+            elif config["last_layers"] == "flatten_dense_drop" and config["network"] != "vision_transformer":
                 end_model_layers = [Flatten()]
                 for i, filters in enumerate(config["denses"]):
                     end_model_layers.append(Dropout(config["dropout"]))
@@ -153,7 +152,7 @@ if __name__ == "__main__":
                     weights="imagenet" if config["transfer"] else None,
                 )
             elif config["network"] == "vision_transformer":
-                network = vision_transformer.create_model(
+                base_network = vision_transformer.create_model(
                     input_shape=(config["grid_size"], config["grid_size"], 3),
                     patch_size=config["patch_size"],
                     num_patches=(config["grid_size"] // config["patch_size"]) ** 2,
@@ -179,6 +178,7 @@ if __name__ == "__main__":
                     Softmax(),
                 ]
             )
+            print(model.summary())
 
             model.compile(
                 optimizer=tf.keras.optimizers.Adam(

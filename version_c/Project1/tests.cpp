@@ -70,7 +70,7 @@ int test_algos() {
 						std::cout << "\x1B[33m--> subtest " << s_num_pt << " pts;" << s_num_clust 
 							<< " clusters;" << s_it_order << " order;" << s_algo << " algorithm;" << s_init << " initialization\033[0m " << std::flush;
 						std::random_device rd;
-						run(argc, argv, 0, false, rd());
+						run(argc, argv, 0, false, rd(), rd());
 						succ_result();
 						i++;
 					}
@@ -116,7 +116,7 @@ int test_DI() {
 					};
 					std::cout << "\x1B[33m--> subtest " << s_num_pt << " pts;" << s_num_clust << " clusters;" << s_it_order << " order;" << "DI;" << s_init << " initialization\033[0m "<< std::flush;
 					std::random_device rd;
-					run(argc, argv, 0, false, rd());
+					run(argc, argv, 0, false, rd(), rd());
 					succ_result();
 					i++;
 				}
@@ -162,7 +162,7 @@ int test_DI_opti() {
 					std::cout << "\x1B[33m--> subtest " << s_num_pt << " pts;" << s_num_clust << " clusters;" << s_it_order << " order;" << "DI optimized;" << s_init << " initialization\033[0m " << std::flush;
 
 					std::random_device rd; 
-					run(argc, argv, 0, true, rd());
+					run(argc, argv, 0, true, rd(),rd());
 					succ_result();
 					i++;
 				}

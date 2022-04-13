@@ -1,9 +1,9 @@
 #include "algorithm.h"
 
 #define UNINITIALIZED -1
-void run(int argc, char* argv[], int loop_id, bool verbose, long seed)
+void run(int argc, char* argv[], int loop_id, bool verbose, long seed_points,long seed_assigns)
 {
-    auto params = get_config(argc, argv, seed);
+    auto params = get_config(argc, argv, seed_points, seed_assigns);
     Config* config = std::get<0>(params);
     IterationOrder* order = std::get<1>(params);
     ImprovementChoice* impr = std::get<2>(params);
@@ -12,7 +12,7 @@ void run(int argc, char* argv[], int loop_id, bool verbose, long seed)
 
     // Define initial clustering
     Clustering* clustering = new Clustering();
-    initialize(clustering, config,seed);
+    initialize(clustering, config);
     double cost = initial_cost(clustering, config);
     result->set_init_cost(cost);
     impr->initialize(clustering);
@@ -79,5 +79,5 @@ void run(int argc, char* argv[], int loop_id, bool verbose, long seed)
     if(verbose)
         result->print_results();
     create_dataset(result, initial_clustering, clustering);
-    clean(config, clustering, order, result, impr, initializer);
+    clean(config, clustering, initial_clustering,order, result, impr, initializer);
 }

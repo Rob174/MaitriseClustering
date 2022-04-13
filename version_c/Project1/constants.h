@@ -1,6 +1,6 @@
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
-
+#include <string>
 typedef struct _Config Config;
 class Clustering {
 public:
@@ -17,7 +17,8 @@ typedef struct _Config
     int IMPR_CLASS;
     int IT_ORDER;
     int INIT_CHOICE;
-    long SEED;
+    long SEED_POINTS;
+    long SEED_ASSIGN;
 }Config;
 
 #endif
