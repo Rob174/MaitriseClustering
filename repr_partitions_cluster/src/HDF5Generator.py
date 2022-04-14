@@ -27,13 +27,13 @@ class HDF5Generator:
                     yield np.copy(hf["input"][k]), np.copy(hf["output"][k])
 
 class HDF5GeneratorFilter(HDF5Generator):
-    def __init__(self, filename_data: Path,filename_metadata: Path, filter_mode: FilterMode):
+    def __init__(self, filename_data: Path,filename_metadata: Path, filter_mode: FilterMode,diversity_mode=False):
         super().__init__(filename_data)
         self.keys = []
         with File(filename_metadata, "r") as cache:
             for k, v in cache["metadata"].items():
                 arr = np.copy(v)
-                init = "random" if arr[3] == 0 else "kmeans+"
+                init = "random" if arr[4 if diversity_mode else 3] == 0 else "kmeans+"
                 if init == filter_mode.value:
                     self.keys.append(k)
         

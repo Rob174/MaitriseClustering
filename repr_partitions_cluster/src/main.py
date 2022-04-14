@@ -23,7 +23,7 @@ from repr_partitions_cluster.src.callbacks import ConfusionMatrix, Predictions
 
 if __name__ == "__main__":
     root = Path(".") / "data"
-    for model_name in ["resnet50"]:
+    for model_name in ["resnet50","vision_transformer"]:
             tf.keras.utils.set_random_seed(1)
             tf.random.set_seed(1)
             # tf.config.experimental.enable_op_determinism()
@@ -47,7 +47,7 @@ if __name__ == "__main__":
                 
                 "patch_size": 8,
                 "projection_dim": 64,
-                "num_heads": 8,
+                "num_heads": 4,
                 "transformer_units": [128, 64],
                 "transformer_layers": 8,
                 "mlp_head_units":[2048, 1024],
@@ -57,15 +57,15 @@ if __name__ == "__main__":
                 config=config,
                 project="Recherche Maitrise",  # Title of your project
                 group="Top view image",  # In what group of runs do you want this run to be in?
-                name=f"{config['network']} - head test {config['num_heads']}",
-                tags=["top_view_image", "learning_rate"],
+                name=f"{config['network']} - Diversified dataset",
+                tags=["top_view_image", "diversified_dataset"],
                 save_code=True,
                 entity="romo-1245",
             )
             path_caches = [
                 root
                 / "image_dataset"
-                / f"dataset_ia_2_clusters_{config['num_pts']}pts_grid_{config['grid_size']}px_{dataset}.hdf5"
+                / f"dataset_ia_2_clusters_{config['num_pts']}pts_diversified_grid_{config['grid_size']}px_{dataset}.hdf5"
                 for dataset in ["tr", "val"]
             ]
             ds = {
@@ -81,12 +81,12 @@ if __name__ == "__main__":
             path_cache = (
                 root
                 / "image_dataset"
-                / f"dataset_ia_2_clusters_{config['num_pts']}pts_grid_{config['grid_size']}px_val.hdf5"
+                / f"dataset_ia_2_clusters_{config['num_pts']}pts_diversified_grid_{config['grid_size']}px_val.hdf5"
             )
-            path_metadata = root / f"dataset_{config['num_pts']}pts_40ksamples.hdf5"
+            path_metadata = root / f"dataset_{config['num_pts']}pts_40ksamples_diversified.hdf5"
             for filter_mode in FilterMode:
                 ds["val_" + filter_mode.value] = tf.data.Dataset.from_generator(
-                    HDF5GeneratorFilter(path_cache, path_metadata, filter_mode),
+                    HDF5GeneratorFilter(path_cache, path_metadata, filter_mode, True),
                     output_signature=(
                         tf.TensorSpec(shape=(config["grid_size"], config["grid_size"], 2), dtype=tf.float32),  # type: ignore
                         tf.TensorSpec(shape=(2,), dtype=tf.float32),  # type: ignore

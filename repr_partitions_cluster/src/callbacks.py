@@ -84,21 +84,54 @@ class Predictions(tf.keras.callbacks.Callback):
         with File(str(path_metadata.resolve()), "r") as cache:
             for k,v in cache["metadata"].items():
                 arr = np.copy(v)
-                self.metadata[k] = {
-                "SEED": arr[0],
-                "NUM_CLUST": arr[1],
-                "NUM_POINTS": arr[2],
-                "INIT_CHOICE": "random" if arr[3] == 0 else "kmeans+",
-                "IMPR_CLASS": "BI" if arr[4] == 0 else "FI",
-                "IT_ORDER": "BACK" if arr[5] == 0 else "other",
-                "init_cost": arr[6],
-                "final_cost": arr[7],
-                "num_iter": arr[8],
-                "num_iter_glob": arr[9],
-                "duration": arr[10],
-            }
+                if (arr.shape[0]) == 11:
+                    self.metadata[k] = {
+                    "SEED": arr[0],
+                    "NUM_CLUST": arr[1],
+                    "NUM_POINTS": arr[2],
+                    "INIT_CHOICE": "random" if arr[3] == 0 else "kmeans+",
+                    "IMPR_CLASS": "BI" if arr[4] == 0 else "FI",
+                    "IT_ORDER": "BACK" if arr[5] == 0 else "other",
+                    "init_cost": arr[6],
+                    "final_cost": arr[7],
+                    "num_iter": arr[8],
+                    "num_iter_glob": arr[9],
+                    "duration": arr[10],
+                }
+                elif (arr.shape[0]) == 12:
+                    self.metadata[k] = {
+                    "SEED_POINTS": arr[0],
+                    "SEED_ASSIGNS": arr[1],
+                    "NUM_CLUST": arr[2],
+                    "NUM_POINTS": arr[3],
+                    "INIT_CHOICE": "random" if arr[4] == 0 else "kmeans+",
+                    "IMPR_CLASS": "BI" if arr[5] == 0 else "FI",
+                    "IT_ORDER": "BACK" if arr[6] == 0 else "other",
+                    "init_cost": arr[7],
+                    "final_cost": arr[8],
+                    "num_iter": arr[9],
+                    "num_iter_glob": arr[10],
+                    "duration": arr[11],
+                    }
+                else:
+                    raise Exception("Metadata file has wrong shape")
+                    
         self.validation_path = validation_path
+        self.current_batch = 0
+        self.current_epoch = 0
+        self.pred_every = 100
+        self.counter = 0
+    def on_train_batch_end(self,batch,logs=None):
+        self.current_batch = batch
+        self.counter += 1
+        if self.counter % self.pred_every == 0:
+            self.predict_batch()
+    def on_epoch_end(self,epoch,logs=None):
+        self.current_epoch = epoch
     def on_train_end(self,*args,**kwargs):
+        self.predict_batch()
+        
+    def predict(self,*args,**kwargs):
         tot_length = 0
         with File(str(self.validation_path.resolve()), "r") as cache:
             keys = list(cache["input"].keys())[:self.num_pred]
@@ -126,7 +159,7 @@ class Predictions(tf.keras.callbacks.Callback):
             img = wandb.Image(inp)
             true = str(self.classes_names[np.argmax(out)]+":"+str(out.round(decimals=2)))
             pred = str(self.classes_names[np.argmax(pred)]+":"+str(pred.round(decimals=2)))
-            data.append([k,img,pred,true,metad])
-        table = wandb.Table(columns=['id_dataset','Clustering initial', 'Valeur réellen','Prédiction','INIT_CHOICE'], data=data)
+            data.append([self.current_batch,self.current_epoch,k,img,pred,true,metad])
+        table = wandb.Table(columns=['batch','epoch','id_dataset','Clustering initial', 'Valeur réellen','Prédiction','INIT_CHOICE'], data=data)
         wandb.log({"predictions":table})
     
