@@ -9,13 +9,13 @@ int main(int argc, char *argv[])
 {
     
     //  External run
-    /*
+    
     for (int i = 0; i < 1; i++)
-        run(argc, argv,i, true,1);
-    */
+        run(argc, argv,i, true,0,1);
+    
     
     //Internal run,
-    
+    /*
     long seed_points = 0;
     long seed_assigns = 0;
     int init = 0;
@@ -33,6 +33,7 @@ int main(int argc, char *argv[])
             delete argv[a];
         delete argv;
     }
+    */
     
     //run_tests();
     return 0;

@@ -78,6 +78,6 @@ void run(int argc, char* argv[], int loop_id, bool verbose, long seed_points,lon
     result->set_time_end();
     if(verbose)
         result->print_results();
-    create_dataset(result, initial_clustering, clustering);
+    //create_dataset(result, initial_clustering, clustering);
     clean(config, clustering, initial_clustering,order, result, impr, initializer);
 }

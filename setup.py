@@ -11,5 +11,5 @@ setup(
   download_url = 'https://github.com/Rob174/MaitriseClustering/0.1',
   keywords = ['clustering', 'neural network' "recommender"], 
   classifiers = [],
-  install_requires=[],
+  install_requires=["tensorflow-gpu","plotly","image-classifiers","wandb"],
 )
