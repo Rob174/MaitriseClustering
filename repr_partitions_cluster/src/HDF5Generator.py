@@ -22,7 +22,7 @@ class HDF5Generator:
         return len(self.keys)
     def __getitem__(self, idx):
         with File(self.filename, "r") as hf:
-            return np.copy(hf["input"][self.keys[idx]]), np.copy(hf["output"][self.keys[idx]])*0.75+0.25
+            return np.copy(hf["input"][self.keys[idx]]), np.copy(hf["output"][self.keys[idx]])
          
     def __call__(self):
             for k in self.keys:
