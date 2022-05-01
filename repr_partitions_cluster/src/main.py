@@ -42,7 +42,7 @@ if __name__ == "__main__":
         "optimizer": "adam",
         "min_delta": 1e-3,
         "patience": 10,
-        "network": model_name, 
+        "network": "resnet50", 
         "grid_size": 128,  
         "last_layers": "flatten_dense",  
         "num_samples": 20000,
@@ -62,7 +62,7 @@ if __name__ == "__main__":
         "dataset": "",
         "seed": seed,
         "activation": "relu",
-        "training_dataset":init
+        "training_dataset":"full"
     }
     wandb.init(
         config=config,
